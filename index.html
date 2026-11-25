@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<meta name="apple-mobile-web-app-title" content="Water Cycle">
+<title>Water Cycle Sanctuary</title>
+<style>
+:root{color-scheme:dark light;--bg:#0b1418;--fg:#e9f3f4;--muted:#b9cfd2;--acc:#6cc6d6;--panel:#13232a;--line:#2d4a52}
+@media (prefers-color-scheme:light){:root{--bg:#f4fafb;--fg:#0f1d21;--muted:#33494e;--acc:#0d5f6e;--panel:#fff;--line:#a9c4c9}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:1.15rem/1.5 -apple-system,system-ui,"Segoe UI",sans-serif}
+main{max-width:46rem;margin:0 auto;padding:1rem 1rem 6rem}
+h1{font-size:1.9rem;margin:.5rem 0}
+h2{font-size:1.5rem;margin:2rem 0 .6rem;padding-top:.6rem;border-top:2px solid var(--line)}
+h3{font-size:1.2rem;margin:1.2rem 0 .4rem}
+p,li{max-width:40rem}
+.note{color:var(--muted)}
+button,select,input[type=number]{font:inherit;color:inherit;background:var(--panel);border:2px solid var(--line);border-radius:.7rem;min-height:3rem;padding:.4rem .9rem}
+button{cursor:pointer;margin:.25rem .3rem .25rem 0}
+button.big{font-size:1.35rem;min-height:3.6rem;width:100%;margin:.4rem 0;font-weight:600}
+button.primary{background:var(--acc);color:#04181d;border-color:var(--acc)}
+button:focus-visible,select:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button[disabled]{opacity:.55}
+select{max-width:100%}
+.field{margin:.6rem 0;display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem}
+.field label{min-width:9rem}
+input[type=range]{width:100%;min-height:2.8rem;accent-color:var(--acc)}
+input[type=number]{width:8rem}
+.switch{display:flex;align-items:center;gap:.7rem;min-height:3rem;margin:.4rem 0}
+.switch input{width:1.8rem;height:1.8rem;accent-color:var(--acc);flex:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:1rem;padding:.4rem 1rem .8rem;margin:.8rem 0;list-style:none}
+ol.stages,ul.layers,ul.plain{padding:0}
+#status{min-height:1.5em;font-weight:600}
+a{color:var(--acc)}
+</style>
+</head>
+<body>
+<main id="top">
+<h1>Water Cycle Sanctuary</h1>
+<p>A sound-only meditation space that follows water around its cycle: mountain stream, brook, river, waterfall, cave water, a little underwater, ocean tides and rain, with wind, leaves in the wind, a little hail and a dawn chorus. Mix the sounds yourself, or travel through them with the water journey. Brainwave tones and solfeggio tones can sit quietly under the water. Nothing plays until you tap Start.</p>
+<p id="status" role="status" aria-live="polite" aria-atomic="true">Getting ready. The water recordings are downloading.</p>
+<p id="loadInfo" class="note">Downloading water recordings…</p>
+
+<section aria-labelledby="h-play">
+<h2 id="h-play">Play</h2>
+<button id="startBtn" class="big primary" type="button">Start</button>
+<div class="field"><label for="masterVol">Master volume</label><input id="masterVol" type="range" min="0" max="100" step="5"></div>
+<button id="describeBtn" type="button">Describe what is playing</button>
+<button id="whereBtn" type="button">Where am I in the water cycle?</button>
+<button id="timeBtn" type="button">Time and timer</button>
+<p id="describeOut" class="note"></p>
+</section>
+
+<section aria-labelledby="h-wake">
+<h2 id="h-wake">Wake-up session</h2>
+<p class="note">A rising session to wake you up, with no voices and no words. The binaural beat starts in deep delta, climbs through theta, alpha and beta to gamma at 40 hertz, holds there briefly, then eases back down to calm, ordinary beta and ends there. The carrier pitch rises with it and settles. Soft, bright solfeggio tones fade in, and the sound moves from a still night pool to a lively mountain stream with wind, leaves and birdsong. It uses its own tones, so your own tone settings are left alone.</p>
+<div class="field"><label for="wakeLen">Wake-up session length</label>
+<select id="wakeLen"><option value="10">10 minutes</option><option value="20">20 minutes (default)</option><option value="30">30 minutes</option></select></div>
+<div class="field"><label for="wakeEnd">At the end of the wake-up session</label>
+<select id="wakeEnd"><option value="stop">Fade out gently and stop (default)</option><option value="hold">Keep playing calm beta until I stop</option></select></div>
+<label class="switch"><input id="wakePulseOn" type="checkbox" role="switch"> Add a gentle isochronic pulse in time with the beat</label>
+<button id="wakeBtn" type="button" class="big primary">Start the wake-up session</button>
+<button id="wakeWhere" type="button">Where am I in the wake-up session?</button>
+<button id="wakeAbout" type="button">What the wake-up session does</button>
+<p id="wakeOut" class="note" aria-live="off"></p>
+</section>
+
+<section aria-labelledby="h-wpresets">
+<h2 id="h-wpresets">Water presets</h2>
+<p class="note">One tap sets the water and weather sounds. It leaves the tones and solfeggio alone, and you can change any sound afterwards. Choosing a preset stops the water journey, if it is running.</p>
+<div id="waterPresetButtons"></div>
+<p id="waterPresetOut" class="note"></p>
+</section>
+
+<section aria-labelledby="h-water">
+<h2 id="h-water">Water sounds</h2>
+<p class="note">Real recordings, each a seamless loop. Turn on as many as you like, each with its own volume. While the water journey runs, it brings each sound in and out by itself, at the volume set on that sound's slider, and the on and off switches wait until the journey stops.</p>
+<ul id="waterList" class="layers"></ul>
+</section>
+
+<section aria-labelledby="h-weather">
+<h2 id="h-weather">Wind, leaves, hail and birdsong</h2>
+<p class="note">Weather to blow through the water. Wind is a full layer. Leaves in the wind and hail are meant as lighter touches, so they start quieter, but you can turn them up. Hail is a separate recording from the rain, with no thunder. Birdsong is an English dawn chorus, used by the wake-up session and playable on its own. Each works just like the water sounds, with its own switch and volume.</p>
+<ul id="weatherList" class="layers"></ul>
+</section>
+
+<section aria-labelledby="h-journey">
+<h2 id="h-journey">Water journey</h2>
+<p class="note">The journey follows the water from a mountain stream, down through a brook, a river and a waterfall, underground into cave water, briefly beneath the waves, out to the open ocean, and up again as rain on the mountains. A little wind and rustling leaves come and go along the way, at the volumes set on their sliders. Each stage crossfades slowly into the next. You can linger at any stage for as long as you like.</p>
+<button id="journeyBtn" type="button" class="big">Start the water journey</button>
+<h3 id="h-jlength">Water journey length</h3>
+<p class="note">Choose a ready-made length, from short up to four, six or eight hours for a whole evening or a whole night, or set your own: type the minutes for one full cycle, from 8 to 480, and every stage stretches or shrinks in proportion. Cave water and underwater stay shorter and the ocean a little longer. Changing the length during the journey keeps your place in the current stage.</p>
+<div class="field"><label for="journeyLength">Water journey length</label><select id="journeyLength"></select></div>
+<div class="field"><label for="journeyCustomMin">My own water journey length, in minutes for one full cycle, 8 to 480</label><input id="journeyCustomMin" type="number" min="8" max="480" step="1" inputmode="numeric"></div>
+<p id="journeyLenNow" class="note"></p>
+<h3 id="h-jloop">Looping</h3>
+<label class="switch"><input id="journeyRepeat" type="checkbox" role="switch"> Loop the water journey: after the rain, go back to the mountain stream</label>
+<p class="note">On by default. When on, the rain crossfades slowly back into the mountain stream and the whole cycle goes round again, for as long as you like. When off, the journey stays with the rain until you stop.</p>
+<label class="switch"><input id="journeyHail" type="checkbox" role="switch"> A brief hail shower during the rain stage</label>
+<p class="note">Off by default. When on, a short shower of hail, about a minute or so, swells up and passes once in the middle of each rain stage, at the volume set on the hail slider.</p>
+<div class="field"><label for="journeySignal">At each new stage</label>
+<select id="journeySignal"><option value="announce">Show the stage on screen for VoiceOver to read (default)</option><option value="chime">Show it on screen and play a soft chime</option><option value="off">Silent: no announcements</option></select></div>
+<button id="journeyWhere" type="button">Where am I in the water cycle?</button>
+<button id="lingerBtn" type="button">Linger here</button>
+<button id="prevStage" type="button">Previous stage</button>
+<button id="nextStage" type="button">Next stage</button>
+<div class="field"><label for="gotoStage">Go to a stage</label><select id="gotoStage"></select></div>
+<button id="gotoBtn" type="button">Go to this stage</button>
+<button id="journeyOverview" type="button">Hear the journey overview</button>
+<p id="journeyOut" class="note" aria-live="off"></p>
+<h3 id="h-stages">The stages</h3>
+<ol id="stageInfo" class="stages"></ol>
+</section>
+
+<section aria-labelledby="h-moods">
+<h2 id="h-moods">Mood presets for brainwave tones</h2>
+<p class="note">One tap sets up the binaural tones for a mood, with carriers tuned to blend as a chord. It replaces your current binaural tones but leaves the water, isochronic and solfeggio tones alone. You can edit everything afterwards. Relaxation sound design, not medical treatment.</p>
+<div id="moodButtons"></div>
+<p id="moodOut" class="note"></p>
+</section>
+
+<section aria-labelledby="h-bin">
+<h2 id="h-bin">Binaural tones</h2>
+<p class="note">Each binaural tone plays a slightly different pitch in each ear; the difference is the beat. Headphones are needed, as speakers mix the two ears together. Up to ten tones.</p>
+<p class="note">Beat drift lets each tone's beat wander gently by itself, so you don't have to keep moving the beat. Set a tone's drift slider to 0 for a steady beat. Beat drift pauses while a beat journey is running, because the journey sets the beat.</p>
+<p class="note">Each tone also has a Carrier pitch choice: Steady; Drift slightly, which follows the drift amount; or Glide, which slides the carrier slowly and smoothly by a set amount, 10 hertz down by default, over the whole session or a length you choose, then stays there. Both ears glide together, so the beat stays exact.</p>
+<div class="field"><label for="toneVol">All brainwave tones volume</label><input id="toneVol" type="range" min="0" max="100" step="5"></div>
+<ul id="binList" class="layers"></ul>
+<button id="addBin" type="button">Add a binaural tone</button>
+</section>
+
+<section aria-labelledby="h-pulse">
+<h2 id="h-pulse">Isochronic pulse with the beat</h2>
+<p class="note">Optional and off by default. Adds a gentle isochronic pulse on the same pitch and at the same beat as your first binaural tone, so the beat is easier to hear on speakers. It follows beat journeys, drift, carrier glide and the wake-up session. The binaural tones stay the main sound.</p>
+<label class="switch"><input id="pulseOn" type="checkbox" role="switch"> Isochronic pulse with the beat</label>
+<div class="field"><label for="pulseVol">Isochronic pulse volume</label><input id="pulseVol" type="range" min="0" max="100" step="5"></div>
+</section>
+
+<section aria-labelledby="h-iso">
+<h2 id="h-iso">Isochronic tones</h2>
+<p class="note">An isochronic tone is one pitch that pulses on and off at the beat rate. It works on speakers as well as headphones. Up to ten tones. The all brainwave tones volume, under Binaural tones, sets these too.</p>
+<p class="note">Pulse drift lets each isochronic tone's pulse rate wander gently by itself. Set the drift slider to 0 for a steady pulse. Pulse drift pauses while a beat journey is running.</p>
+<ul id="isoList" class="layers"></ul>
+<button id="addIso" type="button">Add an isochronic tone</button>
+</section>
+
+<section aria-labelledby="h-beat">
+<h2 id="h-beat">Beat journey</h2>
+<p class="note">Separate from the water journey. A beat journey moves the beat of every brainwave tone that is on through a list of stages, gliding or stepping to each new beat and holding there for as long as you choose. It can run at the same time as the water journey, or on its own. While it runs, beat drift and pulse drift pause, and they come back when you turn the beat journey off.</p>
+<label class="switch"><input id="beatOn" type="checkbox" role="switch"> Beat journey on</label>
+<div class="field"><label for="beatFollow">How the tones follow the beat journey</label>
+<select id="beatFollow"><option value="proportional">Keep their spacing: each tone moves in proportion to the first stage</option><option value="same">All tones move together on the same beat</option></select></div>
+<div class="field"><label for="beatSignal">At each beat stage change</label>
+<select id="beatSignal"><option value="screen">Show it on screen for VoiceOver (default)</option><option value="chime">Show it on screen and play a soft chime</option><option value="off">Silent</option></select></div>
+<button id="beatSpeak" type="button">Describe the whole beat journey</button>
+<button id="beatRestart" type="button">Restart the beat journey from stage 1</button>
+<p id="beatOut" class="note"></p>
+<h3 id="h-bstages">Beat journey stages</h3>
+<ol id="beatList" class="stages"></ol>
+<button id="addBeatStage" type="button">Add a beat stage at the end</button>
+<h3 id="h-btemplates">Beat journey templates</h3>
+<div class="field"><label for="beatTemplate">Template</label><select id="beatTemplate"></select></div>
+<button id="applyBeatTemplate" type="button">Replace my beat stages with this template</button>
+</section>
+
+<section aria-labelledby="h-solf">
+<h2 id="h-solf">Solfeggio tones</h2>
+<p class="note">Soft, steady tones that slowly swell, with a gentle shimmer and a touch of space around them. Up to six, each with its own frequency, volume, swell and position. The traditional meanings of solfeggio frequencies are not proven science.</p>
+<div class="field"><label for="solfVol">All solfeggio tones volume</label><input id="solfVol" type="range" min="0" max="100" step="5"></div>
+<h3 id="h-solfpresets">Solfeggio starting points</h3>
+<p class="note">Each one replaces your solfeggio tones.</p>
+<div id="solfPresetButtons"></div>
+<ul id="solfList" class="layers"></ul>
+<button id="addSolf" type="button">Add a solfeggio tone</button>
+</section>
+
+<section aria-labelledby="h-timer">
+<h2 id="h-timer">Sleep timer</h2>
+<div class="field"><label for="timerMins">Stop after</label>
+<select id="timerMins"><option value="0">No timer</option><option value="15">15 minutes</option><option value="30">30 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">1 and a half hours</option><option value="120">2 hours</option><option value="180">3 hours</option><option value="240">4 hours</option><option value="360">6 hours</option><option value="480">8 hours</option><option value="cycle">When one water cycle ends</option><option value="beat">When the beat journey ends</option></select></div>
+<div class="field"><label for="timerFade">Fade out over the last</label>
+<select id="timerFade"><option value="1">1 minute</option><option value="3">3 minutes</option><option value="5">5 minutes</option><option value="10">10 minutes</option></select></div>
+<p class="note">The timer starts when you tap Start, and counts only while sound is playing.</p>
+</section>
+
+<section aria-labelledby="h-iphone">
+<h2 id="h-iphone">iPhone sound settings</h2>
+<div class="field"><label for="audioMode">How this page plays sound</label>
+<select id="audioMode"><option value="playback">Play like a music app, even in silent mode (default)</option><option value="background">Play like a music app and try to keep going when the screen locks (experimental)</option><option value="mix">Mix with other apps' audio (the silent switch mutes it)</option></select></div>
+<p class="note">Changing this during a session stops the sound; tap Start again.</p>
+<h3 id="h-lock">Lock screen advisory</h3>
+<p>The water, tones and journeys run live inside Safari. On iPhone they usually stop or pause when the screen locks or you switch to another app, and the journeys pause with them, carrying on from the same point when sound resumes. For now, keep Safari open with the screen on, perhaps with Auto-Lock set longer and the brightness turned down. The experimental setting above may keep sound going when locked on some iOS versions, but it has not been tested on your iPhone, so please don't rely on it for sleep.</p>
+</section>
+
+<section aria-labelledby="h-help">
+<h2 id="h-help">Help</h2>
+<h3 id="h-quick">Quick start</h3>
+<ol><li>Wait for the status message to say the water recordings are ready. That is about 15 megabytes, so on mobile data it may take a minute.</li><li>Put on headphones if you want the binaural tones; the water sounds fine on the phone speaker.</li><li>Choose a water preset, or go to Water journey and tap Start the water journey.</li><li>Tap Start. Sound fades in over a few seconds.</li><li>Flick by heading to reach any section. Changes apply straight away while playing.</li></ol>
+<h3 id="h-hearwhere">Hearing where you are</h3>
+<p>Tap Where am I in the water cycle, at the top under Play or in the Water journey section. When a new stage begins, its name and a short line about it appear in the status message, which VoiceOver reads out if the screen is on. The app itself never speaks.</p>
+<h3 id="h-hjourney">Water journey length and looping</h3>
+<p>Under Water journey, the Water journey length heading has ready-made lengths, including four, six and eight hours, and a box for your own length in minutes, from 8 to 480, for one full cycle. On an eight-hour cycle each main stage lasts about three quarters of an hour. Under the Looping heading, the switch Loop the water journey is on by default: after the rain, the journey goes back to the mountain stream and round again. Turn it off to stay with the rain at the end.</p>
+<h3 id="h-hdrift">Beat drift</h3>
+<p>Every brainwave tone has a drift slider. Above 0 it wanders the beat gently and slowly by itself, over a minute or two, so a session never feels fixed. 0 keeps the beat steady. New tones start at 30 percent. Drift pauses while a beat journey runs.</p>
+<h3 id="h-hwake">Wake-up session</h3>
+<p>Near the top, under Wake-up session, choose 10, 20 or 30 minutes and tap Start the wake-up session. It plays on its own, with no words: the beat climbs from deep delta to gamma and comes back down to calm beta, while the water wakes from a still pool into a mountain stream with birdsong. By default it fades out gently and stops at the end. Stage names appear on screen only, so nothing interrupts you; tap Where am I in the wake-up session to hear them. Tap Stop, or Stop the wake-up session, at any time.</p>
+<h3 id="h-hglide">Carrier glide</h3>
+<p>On each brainwave tone, set Carrier pitch to Glide. The carrier then slides gently, 10 hertz down by default, over the whole session or the length you choose. The whole session means the sleep timer if one is set, otherwise one water journey cycle, otherwise the beat journey, otherwise one hour. The glide starts when you tap Start, or straight away if you choose Glide while playing.</p>
+<h3 id="h-silent">If you hear nothing</h3>
+<p>Check the volume buttons and the master volume. If the sound mode is Mix with other apps, the silent switch mutes the page, so turn silent mode off or choose the first sound mode. If iOS paused the sound, tap Start again. If a water sound says it could not be downloaded, reload the page.</p>
+<h3 id="h-honest">An honest note on brainwave and solfeggio tones</h3>
+<p>The band names, delta, theta, alpha and beta, are conventional labels. Research on whether binaural or isochronic beats change brain states is mixed and weak, and the meanings given to solfeggio frequencies are tradition, not science. Treat the tones as relaxation sound design that some people enjoy, not as medical treatment. If any tone feels uncomfortable, stop. People with epilepsy should take medical advice before using pulsing sound. Don't use this while driving. The wake-up session's gamma section is bright; if it feels too much, choose a shorter session or turn the brainwave tones down.</p>
+<h3 id="h-hlong">Long sessions</h3>
+<p>Journeys keep time from the sound clock, so even an eight-hour session stays in step and does not slowly drift. Long sessions still need Safari open with the screen on, as explained under Lock screen advisory.</p>
+<h3 id="h-saved">Saving</h3>
+<p>Your settings are saved on this iPhone in Safari, and come back next time you open the page.</p>
+<button id="resetAll" type="button">Reset everything to the defaults</button>
+</section>
+
+<section aria-labelledby="h-credits">
+<h2 id="h-credits">Credits and licences</h2>
+<p>Every water and weather sound is a real field recording from Freesound, used under Creative Commons Zero (public domain) or Creative Commons Attribution 4.0, both of which allow commercial use. Attribution is required for the Attribution 4.0 recordings and given with thanks for all of them. The app uses Freesound's public high-quality MP3 previews, because the original files need a Freesound login.</p>
+<ul id="credits" class="plain"></ul>
+<p>The brainwave tones, the isochronic pulse, solfeggio tones, the stage chime and the reverb are generated by the app. There are no voices or recorded speech anywhere in the app. App made for Ahsan Ali, November 2026.</p>
+</section>
+<p><a href="#top">Back to the top</a></p>
+</main>
+<audio id="liveOut" hidden aria-hidden="true" playsinline></audio>
+<script>/* Water Cycle Sanctuary — pure logic (no audio, no DOM). Shared by the app and the Node tests. */
+(function(root){
+'use strict';
+const MAX_LAYERS=10, MIN_BEAT=0.5, MAX_BEAT=40, MIN_CARRIER=60, MAX_CARRIER=1000, MAX_SOLF=6;
+const HARMONIC_CARRIERS=[110,165,220,275,330,385,440,495,550,605]; // harmonic series on low A (55 Hz)
+const SOLFEGGIO=[174,285,396,417,432,528,639,741,852,963];
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const num=(v,d)=>{ const n=typeof v==='number'?v:parseFloat(v); return isFinite(n)?n:d; };
+
+/* ---------- words ---------- */
+function hz(v){ v=Math.round(v*100)/100; return (v===1?'1 hertz':v+' hertz'); }
+function minutesWords(m){
+  const s=Math.max(0,Math.round(m*60)); const h=Math.floor(s/3600), mm=Math.floor((s%3600)/60), ss=s%60; const p=[];
+  if(h) p.push(h+(h===1?' hour':' hours'));
+  if(mm) p.push(mm+(mm===1?' minute':' minutes'));
+  if(ss&&!h&&mm<10) p.push(ss+(ss===1?' second':' seconds'));
+  if(!p.length) return '0 minutes';
+  return p.length>1?p.slice(0,-1).join(', ')+' and '+p[p.length-1]:p[0];
+}
+const pct=v=>Math.round(v)+' percent';
+
+/* ---------- gain staging ---------- */
+const TONE_BASE=0.178; // 20 tones in phase at full volume peak at 0.178*sqrt(20) = 0.80, before the limiter
+function volCurve(p){ p=clamp(num(p,0),0,100)/100; return p*p; }
+function masterCurve(p){ p=clamp(num(p,0),0,100)/100; return Math.pow(p,1.6); }
+function toneLayerGain(volPct,nActive){ return TONE_BASE*volCurve(volPct)/Math.sqrt(Math.max(1,nActive)); }
+function worstCaseTonePeak(nActive,volPct){ volPct=volPct==null?100:volPct; return nActive*toneLayerGain(volPct,nActive); }
+const WATER_TARGET_LUFS=-16;  // every recording is trimmed to this loudness at 100 percent
+function waterTrim(lufs,max){ return Math.min(max||4,Math.pow(10,(WATER_TARGET_LUFS-num(lufs,WATER_TARGET_LUFS))/20)); } // capped so very dynamic recordings are not pushed into the limiter
+function waterGain(volPct,lufs,weight,max,levelDb){ return volCurve(volPct)*waterTrim(lufs,max)*(weight==null?1:weight)*Math.pow(10,(levelDb||0)/20); }
+function solfGain(volPct,nActive){ return 0.16*volCurve(volPct)/Math.sqrt(Math.max(1,nActive)); }
+
+/* ---------- water layers ---------- */
+const WATER=[
+ {key:'stream',ph:'the mountain stream',name:'Mountain stream',short:'mountain stream',def:70},
+ {key:'brook',ph:'the brook',name:'Brook',short:'brook',def:65},
+ {key:'river',ph:'the river',name:'River',short:'river',def:65},
+ {key:'waterfall',ph:'the waterfall',name:'Waterfall',short:'waterfall',def:60},
+ {key:'cave',ph:'the cave water',name:'Cave water',short:'cave water',def:70},
+ {key:'underwater',ph:'underwater',name:'Underwater',short:'underwater',def:55,trimMax:2} /* surging recording: its average loudness understates the surges, so boost less */,
+ {key:'ocean',ph:'the ocean tides',name:'Ocean tides',short:'ocean',def:70},
+ {key:'rain',ph:'the rain',name:'Rain',short:'rain',def:60},
+ /* weather layers, added November 2026: wind is a full layer; leaves and hail are meant as lighter touches, so they are trimmed a little quieter and start lower */
+ {key:'wind',ph:'the wind',name:'Wind',short:'wind',def:70,group:'weather',trimMax:3} /* gusty: boost less so gusts never push the limiter */,
+ {key:'leaves',ph:'the leaves',name:'Leaves in the wind',short:'leaves',def:45,group:'weather',levelDb:-3},
+ {key:'hail',ph:'the hail',name:'Hail',short:'hail',def:45,group:'weather',levelDb:-1},
+ /* birdsong, added for the wake-up session (v4, November 2026); also playable on its own */
+ {key:'birds',ph:'the birdsong',name:'Birdsong at dawn',short:'birdsong',def:50,group:'weather',levelDb:-2},
+];
+const WEATHER_KEYS=['wind','leaves','hail','birds'];
+const WATER_KEYS=WATER.map(w=>w.key);
+function waterByKey(k){ return WATER.find(w=>w.key===k); }
+function defaultWater(){ const o={}; WATER.forEach(w=>{ o[w.key]={on:w.key==='stream',vol:w.def}; }); return o; }
+
+/* water mix presets: layers to switch on, with volumes; everything else is switched off */
+const WATER_PRESETS={
+ morning:{name:'Mountain morning',about:'A tumbling mountain stream with a gentle brook beside it.',mix:{stream:70,brook:35}},
+ brookside:{name:'Brookside',about:'Sitting by a small brook, with the mountain stream further off.',mix:{brook:70,stream:25}},
+ riverbank:{name:'Riverbank',about:'A broad river flowing past, with a brook joining it.',mix:{river:70,brook:25}},
+ falls:{name:'By the waterfall',about:'Falling water close by, with the river running on below it.',mix:{waterfall:65,river:30}},
+ cave:{name:'Into the cave',about:'Water dripping in a great dark cave, with a faint underground murmur.',mix:{cave:75,underwater:12}},
+ beneath:{name:'Beneath the waves',about:'Underwater by the rocks, with the ocean above.',mix:{underwater:75,ocean:25}},
+ ocean:{name:'Open ocean',about:'Big waves rolling in, with a slow tidal swell.',mix:{ocean:75}},
+ rainhills:{name:'Rain on the hills',about:'Steady rain feeding a mountain stream.',mix:{rain:65,stream:30}},
+ rainshore:{name:'Rainy shore',about:'Rain falling over the sea.',mix:{rain:50,ocean:55}},
+ all:{name:'Full cycle, all at once',about:'Every water sound gently together: stream, brook, river, waterfall, cave, a little underwater, ocean and rain.',mix:{stream:45,brook:40,river:35,waterfall:30,cave:45,underwater:35,ocean:50,rain:40}},
+ windyhill:{name:'Windy hillside',about:'Wind sweeping over a hillside, a few leaves stirring, and a mountain stream below.',mix:{wind:65,leaves:30,stream:35}},
+ breeze:{name:'Breeze by the brook',about:'A soft breeze moving the leaves above a murmuring brook.',mix:{brook:60,leaves:45,wind:25}},
+ windrain:{name:'Wind and rain',about:'Steady rain driven by the wind, with the trees moving.',mix:{rain:60,wind:50,leaves:25}},
+ windshore:{name:'Windy shore',about:'Waves breaking on the shore with the wind coming in off the sea.',mix:{ocean:65,wind:50}},
+ hailstorm:{name:'Storm with hail',about:'A blustery storm: rain and wind, with hail rattling down for a while. No thunder.',mix:{rain:50,wind:50,hail:40,leaves:20}},
+};
+
+/* ---------- the water journey ----------
+   Each stage features one sound with a little of its neighbours. Hold, then crossfade into the next stage.
+   Cave water and underwater are deliberately shorter ("a little"). */
+const STAGES=[
+ {key:'stream',name:'Mountain stream',mix:{stream:1,rain:0.12,wind:0.3,leaves:0.25},len:1,
+  words:'High in the mountains, snowmelt and rain gather into a tumbling stream, with the wind moving in the trees.'},
+ {key:'brook',name:'Brook',mix:{brook:1,stream:0.25,leaves:0.3},len:1,
+  words:'The stream slows into a brook, murmuring over stones beneath rustling leaves.'},
+ {key:'river',name:'River',mix:{river:1,brook:0.2},len:1,
+  words:'Brooks join to make a broad river, flowing steadily onward.'},
+ {key:'waterfall',name:'Waterfall',mix:{waterfall:1,river:0.3},len:1,
+  words:'The river pours over a ledge as a waterfall.'},
+ {key:'cave',name:'Cave water',mix:{cave:1,waterfall:0.07},len:0.6,
+  words:'Some of the water sinks underground and drips through a dark cave.'},
+ {key:'underwater',name:'Underwater',mix:{underwater:0.9,ocean:0.18},len:0.5,
+  words:'The water reaches the sea. For a moment, you are beneath the waves.'},
+ {key:'ocean',name:'Ocean tides',mix:{ocean:1,wind:0.35},len:1.2,
+  words:'You surface into the open ocean, with big waves, a sea wind and the slow pull of the tide.'},
+ {key:'rain',name:'Rain',mix:{rain:1,ocean:0.18,wind:0.3},len:1,hailHint:true,
+  words:'Warmed by the sun, the sea rises as cloud and blows inland on the wind, falling again as rain on the mountains.'},
+];
+STAGES.forEach(s=>{ s.ph=WATER.find(w=>w.key===s.key).ph; });
+const JOURNEY_LENGTHS={ // minutes at a full-length stage, crossfade minutes
+ short:{name:'Short',hold:2,fade:1},
+ medium:{name:'Unhurried (default)',hold:4,fade:1.5},
+ long:{name:'Long',hold:8,fade:2},
+ vlong:{name:'Very long',hold:12,fade:3},
+ h4:{name:'Four hours, an evening',mins:240},
+ h6:{name:'Six hours, a long evening',mins:360},
+ h8:{name:'Eight hours, all night',mins:480},
+};
+/* "Set my own length": lengthKey 'custom:<minutes>' scales every hold and crossfade of the Unhurried plan, so the stages keep their proportions */
+const CUSTOM_MIN=8, CUSTOM_MAX=480;
+function customKey(mins){ return 'custom:'+clamp(Math.round(num(mins,45)),CUSTOM_MIN,CUSTOM_MAX); }
+function isCustom(k){ return typeof k==='string'&&k.indexOf('custom:')===0; }
+function scaledSpec(name,mins){ const M=JOURNEY_LENGTHS.medium, f=mins/mediumCycleMin(); return {name,hold:M.hold*f,fade:M.fade*f,mins}; }
+function lengthSpec(k){ if(isCustom(k)) return scaledSpec('Your own length',clamp(num(k.slice(7),45),CUSTOM_MIN,CUSTOM_MAX));
+  const P=JOURNEY_LENGTHS[k]||JOURNEY_LENGTHS.medium; return P.mins?scaledSpec(P.name,P.mins):P; }
+function mediumCycleMin(){ const M=JOURNEY_LENGTHS.medium; return STAGES.reduce((a,s)=>a+M.hold*s.len+M.fade,0); }
+function journeyPlan(lengthKey){ const L=lengthSpec(lengthKey);
+  return STAGES.map(s=>({key:s.key,hold:L.hold*s.len*60,fade:L.fade*60})); } // seconds
+function cycleSeconds(lengthKey){ return journeyPlan(lengthKey).reduce((a,s)=>a+s.hold+s.fade,0); }
+function lengthLabel(k){ const L=lengthSpec(k); return L.name+': about '+minutesWords(Math.round(cycleSeconds(k)/60))+' for one full cycle, about '+minutesWords(L.hold)+' at each main stage'; }
+/* where is the journey t seconds in? repeat: after rain, flow back into the mountain stream */
+/* optional brief hail shower part-way through a stage marked hailHint (the rain): a smooth swell up to HAIL_HINT and away again */
+const HAIL_HINT=0.5;
+function hailHintWeight(tInHold,hold){ const w=Math.min(90,Math.max(70,hold*0.35)); if(hold<w) return 0; const c=hold*0.55, x=(tInHold-(c-w/2))/w; if(x<=0||x>=1) return 0; const v=Math.sin(Math.PI*x); return HAIL_HINT*v*v; }
+function withHail(r,hail,lengthKey){ if(!hail||r.phase!=='hold'||!STAGES[r.stage].hailHint) return r; const plan=journeyPlan(lengthKey), h=plan[r.stage].hold;
+  const v=hailHintWeight(h-r.leftInPhase,h); if(v>0) r.mix.hail=v; return r; }
+function journeyAt(tSec,lengthKey,repeat,hail){ return withHail(journeyAt0(tSec,lengthKey,repeat),hail,lengthKey); }
+function journeyAt0(tSec,lengthKey,repeat){
+  const plan=journeyPlan(lengthKey), C=cycleSeconds(lengthKey), n=plan.length;
+  let t=Math.max(0,tSec), cycle=0;
+  if(repeat){ cycle=Math.floor(t/C); t-=cycle*C; }
+  else if(t>=C-plan[n-1].fade){ // not repeating: the last stage (rain) simply carries on
+    return {stage:n-1,next:null,phase:'end',frac:0,leftInPhase:Infinity,cycle:0,done:true,mix:Object.assign({},STAGES[n-1].mix),elapsed:tSec}; }
+  for(let i=0;i<n;i++){ const s=plan[i];
+    if(t<s.hold) return {stage:i,next:(i+1)%n,phase:'hold',frac:0,leftInPhase:s.hold-t,cycle,done:false,mix:Object.assign({},STAGES[i].mix),elapsed:tSec};
+    t-=s.hold;
+    if(t<s.fade){ const f=t/s.fade, j=(i+1)%n; return {stage:i,next:j,phase:'fade',frac:f,leftInPhase:s.fade-t,cycle,done:false,mix:blendMix(STAGES[i].mix,STAGES[j].mix,f),elapsed:tSec}; }
+    t-=s.fade;
+  }
+  return {stage:0,next:1,phase:'hold',frac:0,leftInPhase:plan[0].hold,cycle:cycle+1,done:false,mix:Object.assign({},STAGES[0].mix),elapsed:tSec};
+}
+/* equal-power crossfade between two stage mixes */
+function blendMix(a,b,f){ f=clamp(f,0,1); const ca=Math.cos(f*Math.PI/2), cb=Math.sin(f*Math.PI/2), out={};
+  new Set(Object.keys(a).concat(Object.keys(b))).forEach(k=>{ out[k]=(a[k]||0)*ca+(b[k]||0)*cb; }); return out; }
+/* journey time at which stage i begins (first cycle) */
+function stageStart(i,lengthKey){ const plan=journeyPlan(lengthKey); let t=0; for(let k=0;k<i;k++) t+=plan[k].hold+plan[k].fade; return t; }
+/* the time of the next stage boundary, used to announce stage changes */
+function stageEvents(t0,t1,lengthKey,repeat){ // stage starts (new featured sound fully in) and fade starts, between t0 (exclusive) and t1
+  const plan=journeyPlan(lengthKey), C=cycleSeconds(lengthKey), ev=[]; if(t1<=t0) return ev;
+  const c0=Math.floor(Math.max(0,t0)/C), c1=repeat?Math.floor(t1/C):0;
+  for(let c=c0;c<=c1;c++){ let t=c*C;
+    plan.forEach((s,i)=>{ if(t>t0&&t<=t1&&!(c===0&&i===0)) ev.push({type:'arrive',stage:i,at:t,cycle:c});
+      t+=s.hold; const isLast=i===plan.length-1;
+      if(t>t0&&t<=t1&&(repeat||!isLast)) ev.push({type:'flow',stage:i,to:(i+1)%plan.length,at:t,cycle:c});
+      t+=s.fade; }); }
+  return ev;
+}
+function journeyWhere(j,lengthKey,repeat){
+  if(!j) return 'The water journey is not running.';
+  const s=STAGES[j.stage], n=STAGES.length;
+  if(j.done) return 'The water cycle is complete. You are at stage '+n+' of '+n+', the rain, and it carries on until you stop.';
+  const C=cycleSeconds(lengthKey), into=j.elapsed-(j.cycle*C);
+  const left=repeat?C-into:C-into; const cyc=repeat?' Cycle '+(j.cycle+1)+'.':'';
+  if(j.phase==='hold') return 'Stage '+(j.stage+1)+' of '+n+': '+s.name+'. '+minutesWords(j.leftInPhase/60)+' until the crossfade to the next stage, '+STAGES[j.next].ph+'.'+cyc+' About '+minutesWords(left/60)+' left in this cycle.';
+  return 'Crossfading from '+s.ph+' to '+STAGES[j.next].ph+', '+Math.round(j.frac*100)+' percent of the way. '+minutesWords(j.leftInPhase/60)+' until stage '+(j.next+1)+', '+STAGES[j.next].name.toLowerCase()+', takes over.'+cyc;
+}
+function journeyOverview(lengthKey,repeat){ const L=lengthSpec(lengthKey);
+  return 'The water journey has '+STAGES.length+' stages: '+STAGES.map((s,i)=>(i+1)+', '+s.name.toLowerCase()).join('; ')+'. Each stage lasts about '+minutesWords(L.hold)+' (cave water and underwater are shorter, the ocean a little longer), with '+minutesWords(L.fade)+' crossfades. One full cycle takes about '+minutesWords(cycleSeconds(lengthKey)/60)+'. A little wind blows on the mountain, over the ocean and with the rain, and leaves rustle by the stream and the brook. '+(repeat?'Looping is on: after the rain it crossfades back to the mountain stream and goes round again, for as long as you like.':'Looping is off: after the rain it stays with the rain until you stop.'); }
+
+/* ---------- tones ---------- */
+let idSeq=0; function newId(p){ idSeq++; return (p||'l')+Date.now().toString(36)+idSeq; }
+function nextCarrier(used){ for(const c of HARMONIC_CARRIERS) if(!used.includes(c)) return c; return HARMONIC_CARRIERS[used.length%HARMONIC_CARRIERS.length]; }
+function makeLayer(kind,beat,carrier,vol,drift,carrierDrift){ return normLayer({id:newId(kind[0]),kind,beat:clamp(num(beat,8),MIN_BEAT,MAX_BEAT),carrier:clamp(num(carrier,220),MIN_CARRIER,MAX_CARRIER),vol:clamp(num(vol,40),0,100),on:true,
+  drift:clamp(num(drift,DEFAULT_DRIFT),0,100),carrierDrift:carrierDrift!==false}); }
+/* ---------- beat drift (from Night Fire and the original Sound Sanctuary) ----------
+   Each tone's beat wanders gently by itself, so there is no need to keep moving the beat slider. */
+const DEFAULT_DRIFT=30;
+function driftPhases(id){ let h=2166136261; const s=String(id); for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,16777619)>>>0; }
+  const ph=[]; for(let i=0;i<6;i++){ h=Math.imul(h^(h>>>15),2246822519)>>>0; ph.push((h/4294967296)*2*Math.PI); } return ph; }
+/* smooth pseudo-random drift in [-1,1]; k=0 for the beat, 1 for the carrier; ph = six phases unique to the layer */
+function driftWave(t,k,ph){ const o=k*3; return 0.55*Math.sin(2*Math.PI*t/127+ph[o%6])+0.3*Math.sin(2*Math.PI*t/53+ph[(o+1)%6])+0.15*Math.sin(2*Math.PI*t/23+ph[(o+2)%6]); }
+/* beat at time t: B wanders by up to 40 percent of itself (never more than 3 hertz) at full drift; paused while a beat journey drives the tones */
+function driftBeat(B,drift,t,ph,paused){ const amt=paused?0:Math.min(clamp(num(drift,0),0,100)/100*0.4*B,3); return Math.max(Math.min(B,MIN_BEAT),B+amt*driftWave(t,0,ph)); }
+/* carrier at time t: wanders by up to 2.5 percent at full drift, only if carrier drift is on */
+function driftCarrier(C,drift,carrierDrift,t,ph){ const amt=carrierDrift===true||carrierDrift==null||carrierDrift==='drift'?clamp(num(drift,0),0,100)/100*0.025*C:0; return Math.max(Math.min(C,MIN_CARRIER),C+amt*driftWave(t,1,ph)); }
+function driftWords(d){ d=num(d,0); return d>0?'drift '+Math.round(d)+' percent':'steady'; }
+function normLayer(l){ if(l.drift==null) l.drift=0; l.drift=clamp(num(l.drift,0),0,100); if(l.carrierDrift==null) l.carrierDrift=true; // saved layers from before drift existed stay steady
+  /* carrier mode (v4): saved layers from before v4 keep exactly what they did: drift if their carrier drift switch was on, otherwise steady; glide is never on for them */
+  if(!CARRIER_MODES.includes(l.cmode)) l.cmode=l.carrierDrift!==false?'drift':'steady';
+  l.carrierDrift=l.cmode==='drift';
+  l.glideHz=clamp(num(l.glideHz,GLIDE_DEFAULT),GLIDE_MIN,GLIDE_MAX); if(l.glideDir!=='up') l.glideDir='down';
+  if(!GLIDE_LENGTHS.some(g=>String(g)===String(l.glideLen))) l.glideLen='session';
+  return l; }
+/* ---------- carrier glide (v4) ----------
+   Glide moves the carrier smoothly by glideHz, down (default) or up, over the glide length, then holds there.
+   It is pitch-even (geometric) with a soft start and a soft finish, the gentlest-sounding curve. Both ears move
+   together, so the binaural beat (right minus left) stays exactly what it should be. */
+const CARRIER_MODES=['steady','drift','glide'], GLIDE_MIN=2, GLIDE_MAX=50, GLIDE_DEFAULT=10;
+const GLIDE_LENGTHS=['session',5,10,15,20,30,45,60,90,120,180,240,360,480];
+function smooth01(f){ f=clamp(f,0,1); return f*f*(3-2*f); }
+function glideTarget(C,hz,dir){ return clamp(C+(dir==='up'?1:-1)*clamp(num(hz,GLIDE_DEFAULT),GLIDE_MIN,GLIDE_MAX),MIN_CARRIER,MAX_CARRIER); }
+function glideCarrier(C,hz,dir,elapsedSec,totalSec){ const T=Math.max(1,num(totalSec,3600)), f=smooth01(num(elapsedSec,0)/T); return C*Math.pow(glideTarget(C,hz,dir)/C,f); }
+function glideLenWords(g){ return g==='session'?'the whole session':minutesWords(+g); }
+function carrierModeWords(l){ const m=l.cmode||'drift'; return m==='glide'?'carrier glides '+(l.glideDir==='up'?'up ':'down ')+hz(l.glideHz)+' over '+glideLenWords(l.glideLen):m==='drift'?'carrier drifts':'carrier steady'; }
+function binauralFreqs(carrier,beat){ return {left:carrier-beat/2,right:carrier+beat/2}; }
+function bandName(b){ return b<4?'delta':b<8?'theta':b<13?'alpha':b<30?'beta':'gamma'; }
+function makeSolf(freq,vol,pan,swell){ return {id:newId('s'),freq:clamp(num(freq,528),100,1000),vol:clamp(num(vol,40),0,100),pan:clamp(num(pan,0),-100,100),swell:clamp(num(swell,30),0,90),on:true}; }
+
+const MOODS={
+ calm:{name:'Stay Calm',about:'Holds a calm state you have already reached. Steady alpha and theta beats, no drift.',
+   beats:[6,8,10,4],carriers:[165,220,275,110],weights:[1,1,0.8,0.6],master:60,journey:null},
+ anxiety:{name:'Reduce Anxiety',about:'A gentle, unhurried descent from low beta into alpha and theta, with pauses on the way. Quiet and plain, nothing bright or stimulating. Relaxation sound design only, not a treatment for anxiety.',
+   beats:[14,12,10],carriers:[220,275,165],weights:[0.6,0.7,0.9],drift:30,master:50,
+   journey:{follow:'proportional',stages:[{hz:14,trans:0,shape:'smooth',hold:2},{hz:10,trans:3,shape:'smooth',hold:4},{hz:7,trans:4,shape:'smooth',hold:4},{hz:5,trans:4,shape:'smooth',hold:6}]}},
+ focus:{name:'Focus',about:'Steady low and mid beta with a little alpha underneath, for reading or work.',
+   beats:[12,14,16,10],carriers:[220,275,330,165],weights:[0.8,1,0.8,0.6],master:60,journey:null},
+ sleep:{name:'Sleep Onset',about:'Starts in alpha and slowly settles through theta into delta, holding at each step. Pairs well with the sleep timer.',
+   beats:[8,6,4,2],carriers:[220,165,137.5,110],weights:[0.9,0.85,0.8,0.75],drift:30,master:50,
+   journey:{follow:'proportional',stages:[{hz:8,trans:0,shape:'smooth',hold:3},{hz:6,trans:5,shape:'smooth',hold:5},{hz:4,trans:5,shape:'smooth',hold:8},{hz:2,trans:6,shape:'smooth',hold:15}]}},
+ deep:{name:'Deep Relaxation',about:'Warm low theta and delta with the lowest tones a little louder, and one slow descent to a long hold.',
+   beats:[6,4,3,2],carriers:[165,220,110,137.5],weights:[0.7,0.8,0.9,1],drift:30,master:55,
+   journey:{follow:'proportional',stages:[{hz:6,trans:0,shape:'smooth',hold:5},{hz:4,trans:8,shape:'smooth',hold:20}]}},
+ alert:{name:'Alertness',about:'Steady beta, slightly brighter on the upper tones. Best for short sessions, not for winding down.',
+   beats:[16,18,20,14],carriers:[330,385,440,275],weights:[0.8,0.9,1,0.7],master:55,journey:null},
+ luxury:{name:'Luxury chord: ten harmonised binaural pairs',about:'The indulgence: ten binaural pairs at once, beats 2 to 20 hertz in steps of 2, on carriers from the harmonic series of low A (110 to 605 hertz) so they blend as one chord under the water. Ten beats blur together; enjoy it as a rich chord of pulses.',
+   beats:[2,4,6,8,10,12,14,16,18,20],carriers:HARMONIC_CARRIERS.slice(),weights:[1,1,1,1,1,1,1,1,1,1],master:50,journey:null},
+};
+function moodLayers(key,baseVol){ const m=MOODS[key]; if(!m) throw new Error('unknown mood '+key); baseVol=baseVol==null?45:baseVol;
+  return m.beats.slice(0,MAX_LAYERS).map((b,i)=>makeLayer('binaural',b,m.carriers[i],Math.round(baseVol*m.weights[i]),m.drift||0)); }
+function moodSummary(key){ const m=MOODS[key]; return m.name+': '+m.beats.length+' binaural '+(m.beats.length===1?'tone':'tones')+', beats '+m.beats.map(b=>hz(b)).join(', ')+'. '+(m.journey?'Includes a gentle beat journey of '+minutesWords(beatTotalMin(m.journey.stages))+'.':'Steady, no beat journey and no drift.'); }
+
+const SOLF_PRESETS={
+ one528:{name:'528 hertz on its own',tones:[[528,45,0,30]]},
+ trio:{name:'Three-tone chord: 396, 528 and 639 hertz, left, centre and right',tones:[[396,40,-60,40],[528,40,0,35],[639,35,60,45]]},
+ low:{name:'Low and grounding: 174 and 285 hertz',tones:[[174,45,-30,30],[285,40,30,30]]},
+ bright:{name:'Bright and airy: 741, 852 and 963 hertz, very soft',tones:[[741,25,-50,40],[852,22,0,40],[963,20,50,40]]},
+};
+
+/* ---------- beat journey (from Clock Sanctuary) ----------
+   stage = {hz, trans (minutes, glide from previous stage), shape 'smooth'|'stepped', hold (minutes)} */
+const BEAT_TEMPLATES={
+ staircase:{name:'Staircase down and back up (15 to 0.5 hertz)',stages:[[15,0,2],[10,3,5],[6,3,8],[2,4,5],[0.5,3,5],[6,4,2],[10,3,2],[15,3,1]]},
+ classic:{name:'Classic single hold (15 down to 0.5, hold, back to 15)',stages:[[15,0,1],[0.5,15,10],[15,15,1]]},
+ down:{name:'Descent only, holding at 10, 6 and 3 hertz',stages:[[12,0,2],[10,3,5],[6,4,8],[3,5,15]]},
+};
+function templateStages(key,shape){ return BEAT_TEMPLATES[key].stages.map(s=>({hz:s[0],trans:s[1],shape:shape||'smooth',hold:s[2]})); }
+function cleanStages(st){ return (st||[]).map((s,i)=>({hz:clamp(num(s.hz,10),MIN_BEAT,MAX_BEAT),trans:i===0?0:clamp(num(s.trans,0),0,240),shape:s.shape==='stepped'?'stepped':'smooth',hold:clamp(num(s.hold,0),0,480)})); }
+function beatTotalMin(st){ return cleanStages(st).reduce((a,s)=>a+s.trans+s.hold,0); }
+function lerpGeo(a,b,f){ return a*Math.pow(b/a,f); }
+function beatAt(stages,tSec){
+  const st=cleanStages(stages); if(!st.length) return null;
+  let t=Math.max(0,tSec); let prev=st[0].hz;
+  for(let i=0;i<st.length;i++){
+    const s=st[i], T=s.trans*60, H=s.hold*60;
+    if(i>0 && t<T){ let f=T>0?t/T:1; if(s.shape==='stepped'){ const n=Math.max(1,Math.round(s.trans)); f=Math.min(1,(Math.floor(f*n)+1)/n); }
+      return {hz:lerpGeo(prev,s.hz,f),stage:i,phase:'glide',from:prev,to:s.hz,leftInPhase:T-t,done:false}; }
+    if(i>0) t-=T;
+    if(t<H) return {hz:s.hz,stage:i,phase:'hold',to:s.hz,leftInPhase:H-t,done:false};
+    t-=H; prev=s.hz;
+  }
+  const last=st[st.length-1]; return {hz:last.hz,stage:st.length-1,phase:'end',to:last.hz,leftInPhase:0,done:true};
+}
+function beatEvents(stages,t0,t1){
+  const st=cleanStages(stages); const ev=[]; let t=0;
+  st.forEach((s,i)=>{ if(i){ if(s.trans>0 && t>t0 && t<=t1) ev.push({type:'glide',stage:i,at:t,to:s.hz}); t+=s.trans*60; }
+    if(t>t0 && t<=t1 && (i>0||t>0)) ev.push({type:'hold',stage:i,at:t,hz:s.hz,hold:s.hold}); t+=s.hold*60; });
+  if(t>t0 && t<=t1) ev.push({type:'end',stage:st.length-1,at:t});
+  return ev;
+}
+function beatStageWords(s,i){
+  if(i===0) return 'Stage 1: start at '+hz(s.hz)+(s.hold>0?', hold '+minutesWords(s.hold):'')+'.';
+  const g=s.trans>0?(s.shape==='stepped'?'move in one-minute steps':'glide smoothly')+' over '+minutesWords(s.trans)+' to '+hz(s.hz):'jump straight to '+hz(s.hz);
+  return 'Stage '+(i+1)+': '+g+(s.hold>0?', then hold '+minutesWords(s.hold):', no hold')+'.';
+}
+function beatSummary(stages){ const st=cleanStages(stages); if(!st.length) return 'The beat journey has no stages.';
+  return 'Beat journey of '+st.length+(st.length===1?' stage':' stages')+', '+minutesWords(beatTotalMin(st))+' in total. '+st.map(beatStageWords).join(' ')+' After the last stage the beat stays at '+hz(st[st.length-1].hz)+'.'; }
+function layerBeatUnderJourney(layer,journeyHz,refHz,follow){
+  if(follow==='same') return clamp(journeyHz,MIN_BEAT,MAX_BEAT);
+  const r=refHz>0?layer.beat/refHz:1; return clamp(journeyHz*r,MIN_BEAT/2,MAX_BEAT);
+}
+function moveItem(arr,i,d){ const j=i+d; if(j<0||j>=arr.length) return false; const t=arr[i]; arr[i]=arr[j]; arr[j]=t; return true; }
+
+/* ---------- wake-up session (v4) ----------
+   One timeline, scaled to 10, 20 or 30 minutes. The beat starts in deep delta, climbs through theta, alpha and beta
+   to gamma, holds briefly, then eases back to calm ordinary beta and ends there. The carrier rises with it and settles.
+   Bright solfeggio tones fade in as it brightens. The water goes from a still night pool to a lively mountain stream,
+   with wind, leaves and birdsong. No voices, no words, no suggestions: only tones and recordings. */
+const WAKE_LENGTHS=[10,20,30];
+const WAKE={ // f = fraction of the session
+  beat:[[0,1.5],[0.08,1.5],[0.6,40,'soft'],[0.7,40],[0.82,15],[1,15]],
+  carrier:[[0,110],[0.08,110],[0.7,250],[0.84,220],[1,220]],
+  solf:[{freq:528,vol:32,pan:-35,swell:30,keys:[[0,0],[0.3,0],[0.58,1],[1,1]]},{freq:741,vol:24,pan:35,swell:40,keys:[[0,0],[0.45,0],[0.7,1],[0.84,0.6],[1,0.6]]}],
+  water:{cave:[[0,0.55],[0.15,0.5],[0.3,0.25],[0.45,0],[1,0]],
+    brook:[[0,0.15],[0.15,0.25],[0.3,0.55],[0.45,0.6],[0.6,0.35],[0.72,0.3],[1,0.3]],
+    stream:[[0,0],[0.15,0],[0.3,0.1],[0.45,0.4],[0.6,0.8],[0.72,1],[0.85,0.9],[1,0.9]],
+    wind:[[0,0],[0.15,0],[0.3,0.1],[0.45,0.25],[0.6,0.35],[0.72,0.4],[0.85,0.3],[1,0.3]],
+    leaves:[[0,0],[0.15,0.05],[0.3,0.15],[0.45,0.25],[0.6,0.3],[0.72,0.35],[0.85,0.3],[1,0.3]],
+    birds:[[0,0],[0.3,0],[0.45,0.2],[0.6,0.55],[0.72,0.8],[1,0.8]]},
+  phases:[[0,'Deep delta, by a still night pool'],[0.08,'Rising slowly out of delta as the water begins to flow'],[0.26,'Theta, then alpha, as the brook comes alive'],[0.42,'Into beta, with the stream, the wind and the first birds'],[0.56,'Gamma, bright and awake, with the dawn chorus'],[0.7,'Easing back down to calm, ordinary beta'],[0.82,'Calm beta, awake and settled']],
+  harmony:1.5, harmonyVol:0.55, mainVol:50,
+};
+/* keyframes [[f,v],...]: smooth (soft-start, soft-finish) between neighbours; geometric for frequencies */
+/* a third element 'soft' makes that segment mostly even (equal time per octave) with only a gentle start and finish */
+function keyAt(keys,f,geo){ f=clamp(f,0,1); for(let i=1;i<keys.length;i++){ const a=keys[i-1], b=keys[i]; if(f<=b[0]){ const u=b[0]>a[0]?(f-a[0])/(b[0]-a[0]):1, x=b[2]==='soft'?0.75*u+0.25*smooth01(u):smooth01(u);
+  return geo&&a[1]>0&&b[1]>0?a[1]*Math.pow(b[1]/a[1],x):a[1]+(b[1]-a[1])*x; } } return keys[keys.length-1][1]; }
+function wakeAt(tSec,lenMin){ const T=clamp(num(lenMin,20),1,120)*60, f=clamp(num(tSec,0)/T,0,1);
+  let ph=0; WAKE.phases.forEach((p,i)=>{ if(f>=p[0]) ph=i; });
+  const mix={}; for(const k in WAKE.water) mix[k]=keyAt(WAKE.water[k],f,false);
+  return {f,beat:keyAt(WAKE.beat,f,true),carrier:keyAt(WAKE.carrier,f,true),mix,solf:WAKE.solf.map(s=>({freq:s.freq,vol:s.vol,pan:s.pan,swell:s.swell,level:keyAt(s.keys,f,false)})),
+    phase:ph,phaseName:WAKE.phases[ph][1],left:Math.max(0,T-tSec),done:tSec>=T}; }
+function wakeEvents(t0,t1,lenMin){ const T=clamp(num(lenMin,20),1,120)*60, ev=[]; WAKE.phases.forEach((p,i)=>{ const at=p[0]*T; if(i>0&&at>t0&&at<=t1) ev.push({type:'phase',phase:i,at,name:p[1]}); }); if(T>t0&&T<=t1) ev.push({type:'end',at:T}); return ev; }
+function wakeOverview(lenMin){ return 'Wake-up session, '+minutesWords(lenMin)+'. The binaural beat starts in deep delta at 1.5 hertz, climbs through theta, alpha and beta to gamma at 40 hertz, holds there briefly, then eases back to calm beta at 15 hertz for the last stretch. The carrier pitch rises from 110 to 250 hertz, then settles at 220. Soft 528 and 741 hertz solfeggio tones fade in as it brightens. The sound moves from a still night pool to a lively mountain stream, with wind, leaves and the dawn chorus. No voices or words, just sound.'; }
+
+/* ---------- isochronic pulse support (v4) ----------
+   Optional, off by default: a gentle pulse at the same beat and carrier as the lead binaural tone. */
+function pulseGain(volPct){ return 0.16*volCurve(volPct); }
+
+/* ---------- sleep timer ---------- */
+function timerGain(elapsedSec,totalMin,fadeMin){ if(!totalMin) return 1; const T=totalMin*60,F=Math.min(fadeMin*60,T); const left=T-elapsedSec; if(left<=0) return 0; if(left>=F) return 1; return left/F; }
+
+const API={MAX_LAYERS,MIN_BEAT,MAX_BEAT,MIN_CARRIER,MAX_CARRIER,MAX_SOLF,HARMONIC_CARRIERS,SOLFEGGIO,clamp,num,hz,minutesWords,pct,TONE_BASE,volCurve,masterCurve,toneLayerGain,worstCaseTonePeak,
+  CUSTOM_MIN,CUSTOM_MAX,customKey,isCustom,lengthSpec,mediumCycleMin,DEFAULT_DRIFT,driftPhases,driftWave,driftBeat,driftCarrier,driftWords,normLayer,WATER_TARGET_LUFS,waterTrim,waterGain,solfGain,WATER,WATER_KEYS,WEATHER_KEYS,HAIL_HINT,hailHintWeight,waterByKey,defaultWater,WATER_PRESETS,STAGES,JOURNEY_LENGTHS,journeyPlan,cycleSeconds,lengthLabel,journeyAt,blendMix,stageStart,stageEvents,journeyWhere,journeyOverview,
+  newId,nextCarrier,makeLayer,binauralFreqs,bandName,makeSolf,MOODS,moodLayers,moodSummary,SOLF_PRESETS,BEAT_TEMPLATES,templateStages,cleanStages,beatTotalMin,lerpGeo,beatAt,beatEvents,beatStageWords,beatSummary,layerBeatUnderJourney,moveItem,timerGain,CARRIER_MODES,GLIDE_MIN,GLIDE_MAX,GLIDE_DEFAULT,GLIDE_LENGTHS,smooth01,glideTarget,glideCarrier,glideLenWords,carrierModeWords,WAKE,WAKE_LENGTHS,keyAt,wakeAt,wakeEvents,wakeOverview,pulseGain};
+if(typeof module!=='undefined'&&module.exports) module.exports=API; else root.WCL=API;
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+<script>/* Water Cycle Sanctuary — Web Audio engine. Works with AudioContext or OfflineAudioContext.
+   Tones and gain staging follow Clock Sanctuary; solfeggio voices follow Night Fire. */
+(function(root){
+'use strict';
+const L=root.WCL||(typeof require!=='undefined'?require('./logic.js'):null);
+function softSquare(ctx){ const n=12, re=new Float32Array(n), im=new Float32Array(n); for(let k=1;k<n;k+=2) im[k]=(1/k)*Math.pow(0.55,(k-1)/2); return ctx.createPeriodicWave(re,im); }
+function makeIR(ctx,sec){ const sr=ctx.sampleRate, n=Math.floor(sr*sec), b=ctx.createBuffer(2,n,sr); let seed=12345; const rnd=()=>{ seed=(seed*1103515245+12345)&0x7fffffff; return seed/0x3fffffff-1; };
+  for(let c=0;c<2;c++){ const d=b.getChannelData(c); for(let i=0;i<n;i++) d[i]=rnd()*Math.pow(1-i/n,3)*0.5; } return b; }
+class Engine{
+  constructor(ctx,out){
+    this.ctx=ctx; const c=ctx;
+    this.master=c.createGain(); this.master.gain.value=0;
+    const lim=c.createDynamicsCompressor(); lim.threshold.value=-2; lim.knee.value=0; lim.ratio.value=20; lim.attack.value=0.003; lim.release.value=0.25;
+    // soft safety clipper after the limiter: straight up to 0.8, then a smooth knee that never exceeds 0.98
+    const sh=c.createWaveShaper(), N=4097, cv=new Float32Array(N); for(let i=0;i<N;i++){ const x=(i/(N-1))*2-1, a=Math.abs(x); cv[i]=Math.sign(x)*(a<=0.8?a:0.8+0.18*Math.tanh((a-0.8)/0.18)); } sh.curve=cv;
+    this.master.connect(lim); lim.connect(sh); this.limiter=sh; sh.connect(out||c.destination); this.comp=lim;
+    this.waterBus=c.createGain(); this.waterBus.gain.value=1.6; /* +4 dB make-up so water sits at a comfortable phone level */ this.waterBus.connect(this.master);
+    this.toneBus=c.createGain(); this.toneBus.connect(this.master);
+    this.solfBus=c.createGain(); this.solfBus.gain.value=0.7; this.solfBus.connect(this.master);
+    this.rev=c.createConvolver(); this.rev.buffer=makeIR(c,2.8); const rg=c.createGain(); rg.gain.value=0.5; this.rev.connect(rg); rg.connect(this.master);
+    this.solfSend=c.createGain(); this.solfSend.gain.value=0.3; this.solfBus.connect(this.solfSend); this.solfSend.connect(this.rev);
+    this.pulseBus=c.createGain(); this.pulseBus.gain.value=1; this.pulseBus.connect(this.toneBus); this.pulse=null; /* v4: optional isochronic pulse support, follows the lead tone */
+    this.tones=new Map(); this.water=new Map(); this.solf=new Map(); this.wave=null; this.masterTarget=0; this.timerFactor=1; this.gen=0;
+  }
+  begin(){ this.gen++; }
+  now(){ return this.ctx.currentTime; }
+  ramp(param,v,sec,from){ const t=this.now(); try{ param.cancelScheduledValues(t); param.setValueAtTime(from!=null?from:param.value,t); param.linearRampToValueAtTime(v,t+Math.max(0.02,sec)); }catch(e){ param.value=v; } }
+  setMaster(pct,sec){ this.masterTarget=L.masterCurve(pct); this.ramp(this.master.gain,this.masterTarget*this.timerFactor,sec==null?0.3:sec); }
+  setSolfMaster(pct,sec){ this.ramp(this.solfBus.gain,1.4*L.volCurve(pct),sec==null?0.3:sec); }
+  setToneMaster(pct,sec){ this.ramp(this.toneBus.gain,1.4*L.volCurve(pct),sec==null?0.3:sec); }
+  /* ---------- water loops ---------- */
+  loopPoints(buffer,meta){ const extra=buffer.duration-meta.loopSec; const off=Math.min(Math.max(extra,0),1105/44100); return {start:off,end:off+meta.loopSec}; }
+  startWater(key,buffer,meta,gain,sec,offsetFrac){
+    if(this.water.has(key)) return this.setWater(key,gain,sec);
+    const c=this.ctx, s=c.createBufferSource(), g=c.createGain(), sw=c.createGain(); g.gain.value=0; sw.gain.value=1;
+    s.buffer=buffer; s.loop=true; const lp=this.loopPoints(buffer,meta); s.loopStart=lp.start; s.loopEnd=lp.end;
+    s.connect(g); g.connect(sw); sw.connect(this.waterBus);
+    const off=lp.start+(offsetFrac==null?Math.random():offsetFrac)*meta.loopSec*0.9; // start somewhere different each time
+    s.start(c.currentTime+0.03,off); const n={s,g,sw,target:gain,lfo:null}; this.water.set(key,n);
+    this.ramp(g.gain,gain,sec==null?2:sec,0); return n; }
+  setWater(key,gain,sec){ const n=this.water.get(key); if(!n) return; if(Math.abs(n.target-gain)<1e-5) return; this.ramp(n.g.gain,gain,sec==null?0.4:sec,null); n.target=gain; }
+  stopWater(key,sec){ const n=this.water.get(key); if(!n) return; this.water.delete(key); sec=sec==null?1.5:sec; this.ramp(n.g.gain,0,sec,null); const t=this.now()+sec+0.05; try{ n.s.stop(t); }catch(e){} if(n.lfo) try{ n.lfo.stop(t); }catch(e){} }
+  /* slow tidal swell: the layer rises and falls, never above its set level */
+  setSwell(key,depth,periodSec){ const n=this.water.get(key); if(!n) return; const c=this.ctx; depth=L.clamp(depth,0,0.9);
+    if(!n.lfo&&depth>0){ n.lfo=c.createOscillator(); n.lfo.frequency.value=1/periodSec; n.dep=c.createGain(); n.dep.gain.value=0; n.lfo.connect(n.dep); n.dep.connect(n.sw.gain); n.lfo.start(); }
+    if(n.lfo){ this.ramp(n.lfo.frequency,1/periodSec,1); this.ramp(n.dep.gain,depth/2,2); this.ramp(n.sw.gain,1-depth/2,2); } }
+  /* ---------- tones ----------
+     Frequencies are scheduled ahead on AudioContext time in half-second linear ramps (as in Night Fire), so beat drift
+     and beat journeys glide smoothly with no zipper noise. baseFn(layer,t) gives the undrifted beat at context time t
+     and whether a beat journey owns it (then beat drift pauses; carrier drift still applies). */
+  _makeTone(layer){
+    const c=this.ctx, g=c.createGain(); g.gain.value=0; g.connect(this.toneBus); const n={kind:layer.kind,g,ph:L.driftPhases(layer.id),p:null,until:0};
+    if(layer.kind==='binaural'){ const m=c.createChannelMerger(2);
+      n.l=c.createOscillator(); n.r=c.createOscillator(); n.l.connect(m,0,0); n.r.connect(m,0,1); m.connect(g); n.oscs=[n.l,n.r];
+    } else { if(!this.wave) this.wave=softSquare(c);
+      n.car=c.createOscillator(); n.amp=c.createGain(); n.amp.gain.value=0.5;
+      n.lfo=c.createOscillator(); n.lfo.setPeriodicWave(this.wave); n.depth=c.createGain(); n.depth.gain.value=0.5;
+      n.lfo.connect(n.depth); n.depth.connect(n.amp.gain); n.car.connect(n.amp); n.amp.connect(g); n.oscs=[n.car,n.lfo]; }
+    n.params=n.kind==='binaural'?[n.l.frequency,n.r.frequency]:[n.car.frequency,n.lfo.frequency];
+    return n; }
+  /* baseFn may also give a carrier (carrier glide, or the wake-up session); then carrier drift does not apply */
+  toneFreqs(n,t){ const p=n.p, base=this.baseFn?this.baseFn(p,t):{hz:p.beat,journey:false};
+    const b=L.driftBeat(base.hz,p.drift,t,n.ph,base.journey), cr=base.carrier!=null?base.carrier:L.driftCarrier(p.carrier,p.drift,p.carrierDrift,t,n.ph);
+    if(n.kind==='binaural'){ const f=L.binauralFreqs(cr,b); return [f.left,f.right]; } return [cr,b]; }
+  _hold(param,t){ if(param.cancelAndHoldAtTime){ try{ param.cancelAndHoldAtTime(t); return; }catch(e){} } const v=param.value; param.cancelScheduledValues(t); param.setValueAtTime(v,t); }
+  /* glide to the current target over sec, then carry on scheduling ahead */
+  _retune(n,sec,fresh){ const t=this.now(), te=t+Math.max(0.05,sec), f=this.toneFreqs(n,te);
+    if(fresh){ const f0=this.toneFreqs(n,t); n.params.forEach((pr,i)=>{ pr.value=f0[i]; pr.setValueAtTime(f0[i],t); pr.linearRampToValueAtTime(f[i],te); }); }
+    else n.params.forEach((pr,i)=>{ this._hold(pr,t); pr.linearRampToValueAtTime(f[i],te); });
+    n.until=te; this.schedTones(t+3); }
+  _voices(){ const v=[...this.tones.values()]; if(this.pulse&&this.pulse.p) v.push(this.pulse); return v; }
+  schedTones(until){ const step=0.5;
+    for(const n of this._voices()){ let t=n.until+step; while(t<=until+step){ const f=this.toneFreqs(n,t); n.params.forEach((pr,i)=>pr.linearRampToValueAtTime(f[i],t)); n.until=t; t+=step; } } }
+  syncTones(layers,baseFn,sec,retuneAll){
+    sec=sec==null?0.5:sec; if(baseFn!==undefined) this.baseFn=baseFn; const active=layers.filter(l=>l.on&&l.vol>0); const n=active.length; const seen=new Set();
+    for(const l of active){ seen.add(l.id); let node=this.tones.get(l.id); const cm=l.cmode||(l.carrierDrift!==false?'drift':'steady');
+      const p={id:l.id,beat:l.beat,carrier:l.carrier,drift:l.drift||0,carrierDrift:cm==='drift',cmode:cm,glideHz:l.glideHz,glideDir:l.glideDir,glideLen:l.glideLen,kind:l.kind};
+      if(!node||node.kind!==l.kind){ if(node) this._kill(l.id,0.2); node=this._makeTone(l); node.p=p; this.tones.set(l.id,node); this._retune(node,0.05,true); const t=this.now(); node.oscs.forEach(o=>o.start(t)); }
+      else { const q=node.p; node.p=p; if(retuneAll||q.beat!==p.beat||q.carrier!==p.carrier||q.drift!==p.drift||q.carrierDrift!==p.carrierDrift||q.cmode!==p.cmode||q.glideHz!==p.glideHz||q.glideDir!==p.glideDir||q.glideLen!==p.glideLen) this._retune(node,sec,false); }
+      const target=L.toneLayerGain(l.vol,n); if(node.gainTarget!==target){ this.ramp(node.g.gain,target,Math.max(sec,0.4),node.gainTarget||0); node.gainTarget=target; } }
+    for(const id of [...this.tones.keys()]) if(!seen.has(id)) this._kill(id,0.6);
+    this.syncPulse(this.pulseCfg,sec,retuneAll); }
+  /* ---------- isochronic pulse support (v4) ----------
+     cfg={on,vol}. A gentle isochronic pulse on the lead tone's carrier at the lead tone's beat: it shares the lead
+     tone's settings and drift phases, so it pulses exactly in time with the binaural beat (journeys, glide, wake-up). */
+  leadTone(){ let first=null; for(const n of this.tones.values()){ if(!first) first=n; if(n.kind==='binaural') return n; } return first; }
+  syncPulse(cfg,sec,retune){ this.pulseCfg=cfg; sec=sec==null?0.5:sec; const lead=this.leadTone(), on=cfg&&cfg.on&&cfg.vol>0&&lead;
+    if(!on){ this._killPulse(Math.max(sec,0.6)); return; }
+    let n=this.pulse;
+    if(n&&n.leadId!==lead.p.id){ this._killPulse(0.6); n=null; }
+    if(!n){ n=this._makeTone({id:lead.p.id,kind:'isochronic'}); n.g.disconnect(); n.g.connect(this.pulseBus); n.leadId=lead.p.id; n.ph=lead.ph; n.p=Object.assign({},lead.p,{kind:'isochronic'}); this.pulse=n;
+      this._retune(n,0.05,true); const t=this.now(); n.oscs.forEach(o=>o.start(t)); }
+    else { const q=n.p; n.p=Object.assign({},lead.p,{kind:'isochronic'}); if(retune||JSON.stringify(q)!==JSON.stringify(n.p)) this._retune(n,sec,false); }
+    const target=L.pulseGain(cfg.vol); if(n.gainTarget!==target){ this.ramp(n.g.gain,target,Math.max(sec,0.6),n.gainTarget||0); n.gainTarget=target; } }
+  _killPulse(sec){ const n=this.pulse; if(!n) return; this.pulse=null; this.ramp(n.g.gain,0,sec,n.gainTarget||0); const t=this.now()+sec+0.05; n.oscs.forEach(o=>{ try{o.stop(t);}catch(e){} }); }
+  /* the beat and carrier a tone is playing right now, for descriptions */
+  toneNow(id){ const n=this.tones.get(id); if(!n) return null; const t=this.now(), f=this.toneFreqs(n,t); return n.kind==='binaural'?{beat:f[1]-f[0],carrier:(f[0]+f[1])/2}:{beat:f[1],carrier:f[0]}; }
+  _kill(id,sec){ const n=this.tones.get(id); if(!n) return; this.tones.delete(id); this.ramp(n.g.gain,0,sec,n.gainTarget||0); const t=this.now()+sec+0.05; n.oscs.forEach(o=>{ try{o.stop(t);}catch(e){} }); }
+  /* ---------- solfeggio ---------- */
+  syncSolf(list,sec){ sec=sec==null?0.6:sec; const c=this.ctx, active=list.filter(s=>s.on&&s.vol>0), n=active.length, seen=new Set();
+    for(const s of active){ seen.add(s.id); let v=this.solf.get(s.id);
+      if(!v){ v={freq:s.freq}; v.o1=c.createOscillator(); v.o2=c.createOscillator(); v.o1.frequency.value=s.freq; v.o2.frequency.value=s.freq+0.18;
+        v.amp=c.createGain(); v.amp.gain.value=0.5; v.sw=c.createGain(); v.sw.gain.value=1; v.out=c.createGain(); v.out.gain.value=0;
+        v.lfo=c.createOscillator(); v.lfo.frequency.value=1/(22+Math.random()*25); v.dep=c.createGain(); v.dep.gain.value=0; v.lfo.connect(v.dep); v.dep.connect(v.sw.gain);
+        v.o1.connect(v.amp); v.o2.connect(v.amp); v.amp.connect(v.sw); v.sw.connect(v.out);
+        if(c.createStereoPanner){ v.pn=c.createStereoPanner(); v.out.connect(v.pn); v.pn.connect(this.solfBus); } else v.out.connect(this.solfBus);
+        const t=c.currentTime; [v.o1,v.o2,v.lfo].forEach(o=>o.start(t)); this.solf.set(s.id,v); }
+      if(Math.abs(v.freq-s.freq)>1e-3){ this.ramp(v.o1.frequency,s.freq,0.4,v.freq); this.ramp(v.o2.frequency,s.freq+0.18,0.4,v.freq+0.18); v.freq=s.freq; }
+      const d=L.clamp(s.swell/100,0,0.9); if(v.d!==d){ this.ramp(v.dep.gain,d/2,1); this.ramp(v.sw.gain,1-d/2,1); v.d=d; }
+      if(v.pn&&v.pan!==s.pan){ this.ramp(v.pn.pan,s.pan/100,0.3); v.pan=s.pan; }
+      const g=L.solfGain(s.vol,n); if(v.g!==g){ this.ramp(v.out.gain,g,Math.max(sec,0.4),v.g||0); v.g=g; } }
+    for(const id of [...this.solf.keys()]) if(!seen.has(id)){ const v=this.solf.get(id); this.solf.delete(id); this.ramp(v.out.gain,0,0.8,v.g||0); const t=this.now()+0.9; [v.o1,v.o2,v.lfo].forEach(o=>{ try{o.stop(t);}catch(e){} }); } }
+  /* soft synthesised bell, used only if chosen for water journey stage changes */
+  chime(gain){ const c=this.ctx, t=c.currentTime+0.02, out=c.createGain(); out.gain.value=gain==null?0.1:gain; out.connect(this.master); out.connect(this.rev);
+    [[523.25,1,4],[1046.5,0.35,2.5],[1443,0.2,1.6],[2822,0.06,0.9]].forEach(([f,a,d])=>{ const o=c.createOscillator(), g=c.createGain(); o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(a,t+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t+d); o.connect(g); g.connect(out); o.start(t); o.stop(t+d+0.1); }); }
+  stopAll(sec){ sec=sec==null?2:sec; this.ramp(this.master.gain,0,sec,this.master.gain.value); const self=this, gen=++this.gen;
+    setTimeout(()=>{ if(self.gen!==gen) return; for(const k of [...self.water.keys()]) self.stopWater(k,0.05); for(const id of [...self.tones.keys()]) self._kill(id,0.05); self._killPulse(0.05); self.syncSolf([],0.05); },sec*1000+50); }
+  setTimerFactor(f){ if(Math.abs(f-this.timerFactor)<0.002) return; this.timerFactor=f; this.ramp(this.master.gain,this.masterTarget*f,0.9); }
+}
+const API={Engine,softSquare,makeIR};
+if(typeof module!=='undefined'&&module.exports) module.exports=API; else root.WCEngine=API;
+})(typeof window!=='undefined'?window:globalThis);
+</script>
+<script>const WATER_META={"stream":{"loopSamples":2231460,"sr":44100,"loopSec":50.6,"channels":2,"srcStart":7.0,"srcEnd":57.6,"fadeSec":3,"matchScore":0.012,"gainDb":4.94,"kbps":112,"lufs":-22.2,"bytes":709529,"about":"Snowmelt tumbling down a mountain stream through a winter forest. Recorded in the field.","sources":[{"title":"Tumbling stream in mountain forest (winter)","author":"darthbaul","url":"https://freesound.org/people/darthbaul/sounds/262647/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"Snow-melt flooding a mountain stream, winter forest in the background, recorded with a Zoom H1.","changes":"A 51-second section starting 7 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 35 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"brook":{"loopSamples":3748500,"sr":44100,"loopSec":85.0,"channels":2,"srcStart":7.7,"srcEnd":92.7,"fadeSec":3,"matchScore":0.01,"gainDb":11.44,"kbps":112,"lufs":-21.5,"bytes":1190809,"about":"A little Scottish stream murmuring over stones, near Charlestown in Fife. Recorded in the field.","sources":[{"title":"Murmuring Stream","author":"borralbi","url":"https://freesound.org/people/borralbi/sounds/337614/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A little stream near Charlestown, Fife, Scotland, recorded in February with an Olympus LS-12 and a windshield.","changes":"A 85-second section starting 8 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 35 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"river":{"loopSamples":3986640,"sr":44100,"loopSec":90.4,"channels":2,"srcStart":110.8,"srcEnd":201.2,"fadeSec":3,"matchScore":0.0,"gainDb":12.43,"kbps":112,"lufs":-16.7,"bytes":1266512,"about":"A small river flowing through the wild landscape of east Iceland. Recorded in the field.","sources":[{"title":"River in Icelandic nature (ambience, 5 minutes)","author":"askeseverin","url":"https://freesound.org/people/askeseverin/sounds/376202/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A small river in east Iceland, recorded with a Zoom H6.","changes":"A 90-second section starting 1 minute 51 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 35 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"waterfall":{"loopSamples":3999870,"sr":44100,"loopSec":90.7,"channels":2,"srcStart":14.7,"srcEnd":105.4,"fadeSec":3,"matchScore":0.002,"gainDb":2.61,"kbps":112,"lufs":-12.0,"bytes":1270900,"about":"A rather large waterfall, recorded from a stone pier just above and to one side of the falling water.","sources":[{"title":"Waterfall","author":"Tom_Kaszuba","url":"https://freesound.org/people/Tom_Kaszuba/sounds/656632/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A stereo recording of a rather large waterfall, made with a Sony PCM-D100 placed just above and to the left of the falls.","changes":"A 91-second section starting 15 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 30 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"cave":{"loopSamples":1702260,"sr":44100,"loopSec":38.6,"channels":2,"srcStart":5.4,"srcEnd":44.0,"fadeSec":2.5,"matchScore":1.492,"gainDb":19.15,"kbps":112,"lufs":-24.6,"bytes":541300,"about":"Many drops of water falling in total darkness in the Cacique hall, a huge chamber of the Ojo Guare\u00f1a cave system in northern Spain. Recorded in the field.","sources":[{"title":"Many drops of water in a big cave (Karstic system Ojo Guare\u00f1a, Burgos, Spain)","author":"nomadas","url":"https://freesound.org/people/nomadas/sounds/609161/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A soundscape recorded in total darkness in the Cacique hall, a huge chamber in the Ojo Guare\u00f1a karst cave system, Burgos, Spain, with many drips around the listener in stereo. Recorded with a Sony PCM-D50.","changes":"A 39-second section starting 5 seconds into the high-quality preview, with both loop points placed in quiet moments, made into a seamless loop with a 2.5-second equal-power crossfade, a low-cut filter at 60 hertz, the low rumble below 250 hertz made mono (it was out of phase between the two microphones and would partly cancel on a phone speaker), peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"underwater":{"loopSamples":4573170,"sr":44100,"loopSec":103.7,"channels":1,"srcStart":3.7,"srcEnd":107.4,"fadeSec":3,"matchScore":-3.21,"gainDb":5.5,"kbps":80,"lufs":-28.4,"bytes":1037628,"about":"Sea waves surging back and forth with bubbles, recorded underwater close to the rocks in Peru, over a quiet bed of hydrophone water from a mountain stream so it never falls completely silent.","sources":[{"title":"Sea waves underwater, back and forth, with water bubbles recorded close to the rocks","author":"felix.blume","url":"https://freesound.org/people/felix.blume/sounds/705057/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"Described by the recordist as sea waves underwater, back and forth, with water bubbles, recorded close to the rocks in Peru in 2012 with a Schoeps CCM41 microphone and a Sound Devices 744T recorder. Freesound lists it as a mono file.","changes":"The main recording in this layer. A 104-second section starting 4 seconds into the high-quality preview, with both loop points placed in quiet moments, blended with the hydrophone recording below, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 30 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 80 kilobits per second, mono."},{"title":"Mountain stream","author":"ganapataye","url":"https://freesound.org/people/ganapataye/sounds/845254/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A mountain stream recorded underwater with a hydrophone (Cjossul, organicaudio.it) and a Sound Devices MixPre-6.","changes":"Used as a quiet underwater bed beneath the sea recording: the left channel only (its two channels were partly out of phase), from 1 minute into the high-quality preview, set 8 decibels below the main recording's average level, then looped and encoded with it."}]},"ocean":{"loopSamples":6425370,"sr":44100,"loopSec":145.7,"channels":2,"srcStart":54.9,"srcEnd":200.6,"fadeSec":4,"matchScore":-1.417,"gainDb":6.8,"kbps":112,"lufs":-19.3,"bytes":2040729,"about":"Big waves rolling in and breaking on a rocky Baltic shore in Sweden. The slow tidal swell is added by the app.","sources":[{"title":"Big waves hit land.wav","author":"straget","url":"https://freesound.org/people/straget/sounds/412308/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"Baltic Sea waves near Oskarshamn, Sweden, recorded with a Zoom F4 and a pair of Line Audio CM3 microphones in windshields. The Baltic has almost no tide, so the tidal rise and fall is a gentle volume swell made by the app, not part of the recording.","changes":"A 146-second section starting 55 seconds into the high-quality preview, with both loop points placed between waves, made into a seamless loop with a 4-second equal-power crossfade, a low-cut filter at 25 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"rain":{"loopSamples":2346120,"sr":44100,"loopSec":53.2,"channels":2,"srcStart":4.5,"srcEnd":57.7,"fadeSec":3,"matchScore":0.155,"gainDb":5.24,"kbps":112,"lufs":-17.0,"bytes":745734,"about":"Moderate rain falling in Witley, England. Recorded in the field.","sources":[{"title":"Rain, Moderate, A.wav","author":"InspectorJ (www.jshaw.co.uk)","url":"https://freesound.org/people/InspectorJ/sounds/401277/","licence":"Creative Commons Attribution 4.0","licenceUrl":"https://creativecommons.org/licenses/by/4.0/","what":"Raw audio of moderate rainfall in Witley, England, recorded with a Zoom H1. Credit as the author asks: \"Rain, Moderate, A.wav\" by InspectorJ (www.jshaw.co.uk) of Freesound.org.","changes":"A 53-second section starting 4 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, a gentle low-cut filter at 40 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"wind":{"loopSamples":4118940,"sr":44100,"loopSec":93.4,"channels":2,"srcStart":265.8,"srcEnd":359.2,"fadeSec":4,"matchScore":-1.184,"gainDb":20.3,"kbps":112,"lufs":-24.5,"bytes":1308569,"about":"Real wind blowing in gusts through tall trees on a stormy night. Recorded in the field.","sources":[{"title":"Ambient Wind *Real Wind*","author":"UnderlinedDesigns","url":"https://freesound.org/people/UnderlinedDesigns/sounds/172666/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"Icy, gusty wind slicing through trees at night as a storm was brewing, recorded outdoors with a Zoom H4n and a foam windshield.","changes":"A 93-second section starting 4 minutes 26 seconds into the high-quality preview, with both loop points placed in quieter moments between gusts, made into a seamless loop with a 4-second equal-power crossfade, its biggest gusts gently evened out so they never jump out at you, a gentle low-cut filter at 40 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"leaves":{"loopSamples":3139920,"sr":44100,"loopSec":71.2,"channels":2,"srcStart":14.5,"srcEnd":85.7,"fadeSec":3,"matchScore":0.007,"gainDb":31.54,"kbps":112,"lufs":-22.4,"bytes":997712,"about":"Close up to a tree, its branches and leaves rustling in gusts of wind, with distant treetops swaying. Recorded in the field.","sources":[{"title":"Forest, close up of trees rustling in the wind.wav","author":"Anya_Media","url":"https://freesound.org/people/Anya_Media/sounds/523389/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A close-up recording of a tree's branches and leaves rustling in gusts of wind, with the constant roar of distant swaying treetops, recorded with an Audio-Technica BP4025 stereo microphone into a Zoom F8.","changes":"A 71-second section starting 14 seconds into the high-quality preview, made into a seamless loop with a 3-second equal-power crossfade, the loudest gusts very slightly evened out, keeping the natural rise and fall of the rustling, a low-cut filter at 60 hertz, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"hail":{"loopSamples":2579850,"sr":44100,"loopSec":58.5,"channels":2,"srcStart":6.8,"srcEnd":65.3,"fadeSec":3,"matchScore":2.253,"gainDb":12.68,"kbps":112,"lufs":-26.5,"bytes":819974,"about":"A winter shower of hail: crisp ice pellets bouncing off a roof, recorded just outside a roof window in Bavaria. Real hail, no rain sound and no thunder.","sources":[{"title":"Altenthann Winter Hailstorm \u2013 Rooftop Impact Ambience STEREO (3 February 2026) - 20260203","author":"TSP-Talk","url":"https://freesound.org/people/TSP-Talk/sounds/844074/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A winter hail shower in Altenthann, near Regensburg, Germany, recorded on 3 February 2026 with a Zoom F3 and Earsight The One omnidirectional microphones held just outside a roof window, so the hailstones strike the roof close by.","changes":"A 58-second section starting 7 seconds into the high-quality preview, chosen to leave out a crow that calls later in the recording, made into a seamless loop with a 3-second equal-power crossfade, the very loudest hailstone strikes limited so that none of them crack out sharply, a low-cut filter at 200 hertz to take away the faint distant traffic rumble the recordist mentions, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]},"birds":{"loopSamples":3430980,"sr":44100,"loopSec":77.8,"channels":2,"srcStart":191.2,"srcEnd":269.0,"fadeSec":4,"matchScore":0.016,"gainDb":5.44,"kbps":112,"lufs":-18.0,"bytes":1090237,"about":"An English dawn chorus at four in the morning in late May: robin, goldfinch and song thrush. Recorded in the field.","sources":[{"title":"Dawn Chorus Birdsong","author":"squashy555","url":"https://freesound.org/people/squashy555/sounds/573080/","licence":"Creative Commons Zero 1.0 (public domain)","licenceUrl":"https://creativecommons.org/publicdomain/zero/1.0/","what":"A dawn chorus of robin, goldfinch and song thrush, recorded at 4 in the morning on 29 May 2021.","changes":"A 78-second section starting 3 minutes 11 seconds into the high-quality preview, made into a seamless loop with a 4-second equal-power crossfade, a low-cut filter at 150 hertz to remove background rumble, peak level set to minus 1 decibel and loudness matched in the app; MP3 at 112 kilobits per second, stereo."}]}};const PACKS=["packs/pack1.html", "packs/pack2.html", "packs/pack3.html", "packs/pack4.html", "packs/pack5.html"];</script>
+<script>/* Water Cycle Sanctuary — user interface and session control.
+   iOS unlock, output routing, tones and beat journey follow Clock Sanctuary; sound packs follow Night Fire. */
+(function(){
+'use strict';
+const L=window.WCL, $=id=>document.getElementById(id);
+const KEY='waterCycleSanctuary.v1';
+const W=L.WATER, META=WATER_META;
+function defaults(){ return {v:1,master:75,water:L.defaultWater(),swell:{on:true,depth:35,period:'120'},
+  journey:{on:false,length:'medium',customMin:45,repeat:true,signal:'announce',hail:false},
+  toneVol:80,bin:[L.makeLayer('binaural',8,220,30)],iso:[],
+  beat:{on:false,follow:'proportional',signal:'screen',stages:L.templateStages('staircase')},
+  solfVol:70,solf:[],timer:{mins:'0',fade:'3'},audioMode:'playback',mood:null,wpreset:null,
+  pulse:{on:false,vol:30},wake:{len:20,end:'stop'}}; } /* v4: isochronic pulse support (off by default) and the wake-up session */
+let S=load();
+/* the water journey length key the logic uses: a preset, or 'custom:<minutes>' for Set my own length */
+function JL(){ return S.journey.length==='custom'?L.customKey(S.journey.customMin):S.journey.length; }
+function load(){ try{ const s=JSON.parse(localStorage.getItem(KEY)); if(s&&s.v===1){ const d=defaults();
+  const water=d.water; for(const k in water) if(s.water&&s.water[k]) water[k]=Object.assign(water[k],s.water[k]);
+  return Object.assign(d,s,{water,swell:Object.assign(d.swell,s.swell||{}),journey:Object.assign(d.journey,s.journey||{}),beat:Object.assign(d.beat,s.beat||{}),timer:Object.assign(d.timer,s.timer||{}),pulse:Object.assign(d.pulse,s.pulse||{}),wake:Object.assign(d.wake,s.wake||{}),
+    bin:Array.isArray(s.bin)?s.bin.map(L.normLayer):d.bin,iso:Array.isArray(s.iso)?s.iso.map(L.normLayer):d.iso,solf:Array.isArray(s.solf)?s.solf:d.solf}); } }catch(e){} return defaults(); }
+let saveT=null; function save(){ clearTimeout(saveT); saveT=setTimeout(()=>{ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} },300); }
+let lastSay=''; function say(msg){ const el=$('status'); if(msg===lastSay) el.textContent=''; lastSay=msg; setTimeout(()=>{ el.textContent=msg; },30); }
+const pct=L.pct;
+function setRange(el,v){ el.value=v; el.setAttribute('aria-valuetext',+v===0?'silent':pct(v)); }
+function el(tag,attrs,kids){ const e=document.createElement(tag); for(const k in (attrs||{})){ const v=attrs[k]; if(k==='text') e.textContent=v; else if(k.startsWith('on')) e.addEventListener(k.slice(2),v); else e.setAttribute(k,v); }
+  (kids||[]).forEach(c=>e.appendChild(typeof c==='string'?document.createTextNode(c):c)); return e; }
+function rangeField(id,label,val,oninput){ const r=el('input',{type:'range',id,min:'0',max:'100',step:'5'}); setRange(r,val); r.addEventListener('input',()=>{ setRange(r,+r.value); oninput(+r.value); });
+  return el('div',{class:'field'},[el('label',{for:id,text:label}),r]); }
+function numField(id,label,val,min,max,onchange){ const n=el('input',{type:'number',id,min:String(min),max:String(max),step:'any',inputmode:'decimal'}); n.value=val;
+  n.addEventListener('change',()=>{ const v=L.clamp(L.num(n.value,val),min,max); n.value=v; onchange(v); }); return el('div',{class:'field'},[el('label',{for:id,text:label}),n]); }
+
+/* ---------- audio context, iOS unlock, output routing (pattern from Night Fire and Clock Sanctuary) ---------- */
+let ctx=null, engine=null, unlockEl=null, msd=null, playing=false, loopT=null;
+function silentWav(){ const sr=8000,n=sr,b=new ArrayBuffer(44+n*2),v=new DataView(b),w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+  w(0,'RIFF');v.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,sr,true);v.setUint32(28,sr*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,n*2,true);
+  return URL.createObjectURL(new Blob([b],{type:'audio/wav'})); }
+function setAudioSession(){ try{ if(navigator.audioSession) navigator.audioSession.type=S.audioMode==='mix'?'ambient':'playback'; }catch(e){} }
+function ensureCtx(){ // must run inside a tap
+  setAudioSession();
+  if(!ctx){ const AC=window.AudioContext||window.webkitAudioContext; ctx=new AC({latencyHint:'playback'}); }
+  if(S.audioMode!=='mix'){ if(!unlockEl){ unlockEl=new Audio(silentWav()); unlockEl.loop=true; unlockEl.setAttribute('playsinline',''); } unlockEl.play().catch(()=>{}); }
+  else if(unlockEl) unlockEl.pause();
+  if(ctx.state!=='running') ctx.resume().catch(()=>{});
+  if(!engine) engine=new WCEngine.Engine(ctx,ctx.destination);
+  return ctx; }
+async function routeOutput(){
+  const out=$('liveOut'); engine.limiter.disconnect();
+  if(S.audioMode==='background'&&ctx.createMediaStreamDestination){ try{ if(!msd) msd=ctx.createMediaStreamDestination(); engine.limiter.connect(msd); if(out.srcObject!==msd.stream) out.srcObject=msd.stream; await out.play(); if(unlockEl) unlockEl.pause(); return; }catch(e){ console.warn('media route failed',e); try{engine.limiter.disconnect();}catch(_){} } }
+  try{ out.pause(); }catch(e){} engine.limiter.connect(ctx.destination); }
+
+/* ---------- sound packs: hidden pages that hand over the recordings (pattern from Night Fire) ---------- */
+const RAW={}, BUF={}, DECP={}, FAILED={};
+const packState={total:PACKS.length,done:0,failed:0,announced:false};
+function b64ToBuf(b){ const s=atob(b), u=new Uint8Array(s.length); for(let i=0;i<s.length;i++) u[i]=s.charCodeAt(i); return u.buffer; }
+function packsSettled(){ return packState.done+packState.failed>=packState.total; }
+function waterStatus(k){ if(BUF[k]||RAW[k]) return 'ready'; if(FAILED[k]) return 'failed'; return packsSettled()?'missing':'downloading'; }
+function loadInfo(){ W.forEach(w=>{ const e=$('wstate-'+w.key); if(!e) return; const st=waterStatus(w.key);
+    e.textContent=st==='ready'?'Recording ready.':st==='downloading'?'Downloading…':st==='failed'?'This recording could not be decoded on this device.':'Could not be downloaded. Reload the page to try again.'; });
+  $('loadInfo').textContent=packsSettled()?(packState.failed?'Downloaded '+packState.done+' of '+packState.total+' sound packs. Some water sounds are missing; reload to try again. Everything else works.':'All water and weather recordings downloaded.'):'Downloading water recordings: '+packState.done+' of '+packState.total+' sound packs so far.'; }
+function afterPack(){ loadInfo(); if(playing) syncWater(1.5);
+  if(packsSettled()&&!packState.announced){ packState.announced=true; say(packState.failed?'Some water recordings could not be downloaded. Check your connection and reload the page. The tones still work.':(playing?'All water recordings are now downloaded.':'Ready. All recordings downloaded. Tap Start.')); } }
+function loadPacks(){ loadInfo();
+  PACKS.forEach((url,i)=>{ const fr=document.createElement('iframe'); fr.hidden=true; fr.setAttribute('aria-hidden','true'); fr.tabIndex=-1; fr.title='Sound pack '+(i+1); let got=false;
+    const onMsg=e=>{ if(got||e.source!==fr.contentWindow||!e.data||!e.data.waterCyclePack) return; got=true; window.removeEventListener('message',onMsg);
+      const d=e.data.data; for(const k in d) if(META[k]) RAW[k]=b64ToBuf(d[k]); packState.done++; afterPack(); setTimeout(()=>fr.remove(),200); };
+    const fail=()=>{ if(got) return; got=true; window.removeEventListener('message',onMsg); packState.failed++; console.warn('sound pack failed',url); afterPack(); };
+    window.addEventListener('message',onMsg);
+    fr.addEventListener('load',()=>{ setTimeout(()=>{ if(!got) try{ fr.contentWindow.postMessage({waterCycleWant:1},'*'); }catch(e){} },1500); setTimeout(fail,45000); });
+    fr.addEventListener('error',fail); setTimeout(fail,240000); fr.src=url; document.body.appendChild(fr); }); }
+function getBuffer(k){ if(BUF[k]) return Promise.resolve(BUF[k]); if(DECP[k]) return DECP[k]; if(!RAW[k]||!ctx) return Promise.resolve(null);
+  DECP[k]=new Promise(res=>{ let done=false; const fin=b=>{ if(done) return; done=true; delete DECP[k]; if(b){ BUF[k]=b; } else { FAILED[k]=true; loadInfo(); } res(b||null); };
+    try{ const p=ctx.decodeAudioData(RAW[k].slice(0),fin,e=>{ console.warn('decode failed',k,e); fin(null); }); if(p&&p.then) p.then(fin,()=>fin(null)); }catch(e){ console.warn(e); fin(null); } });
+  return DECP[k]; }
+const MAX_DECODED=4; // keep phone memory moderate: decoded recordings not playing are released
+function evict(keep){ const ks=Object.keys(BUF); if(ks.length<=MAX_DECODED) return; for(const k of ks){ if(Object.keys(BUF).length<=MAX_DECODED) break; if(!keep.has(k)&&!(engine&&engine.water.has(k))) delete BUF[k]; } }
+
+/* ---------- water mix ---------- */
+let jRef=0, jFrozen=0, lingering=false, jLast=0, jEndNote=false, journeyRunning=false;
+function jt(){ return lingering||!ctx?jFrozen:jFrozen+(ctx.currentTime-jRef); }
+function journeyState(){ return journeyRunning&&playing&&!wakeRunning?L.journeyAt(jt(),JL(),S.journey.repeat,S.journey.hail):null; }
+function waterTargets(){ const j=journeyState(), wk=wakeState(), out={};
+  W.forEach(w=>{ const c=S.water[w.key], m=META[w.key]; const lufs=m?m.lufs:L.WATER_TARGET_LUFS;
+    out[w.key]= wk ? L.waterGain(c.vol,lufs,wk.mix[w.key]||0,w.trimMax,w.levelDb) : j ? L.waterGain(c.vol,lufs,j.mix[w.key]||0,w.trimMax,w.levelDb) : (c.on?L.waterGain(c.vol,lufs,1,w.trimMax,w.levelDb):0); });
+  return {out,j,wk}; }
+function prefetchKeys(j){ const s=new Set(); if(wakeRunning&&playing){ const a=L.wakeAt(wt()+90,S.wake.len); for(const k in a.mix) if(a.mix[k]>0) s.add(k); return s; } if(j){ [j.stage,j.next].forEach(i=>{ if(i==null) return; Object.keys(L.STAGES[i].mix).forEach(k=>s.add(k)); if(S.journey.hail&&L.STAGES[i].hailHint) s.add('hail'); }); } return s; }
+let syncing=false, resync=false;
+async function syncWater(sec){ if(!engine||!playing) return; if(syncing){ resync=true; return; } syncing=true;
+  try{ const {out,j}=waterTargets(); const keep=prefetchKeys(j);
+    W.forEach(w=>{ if(out[w.key]>0.0004) keep.add(w.key); });
+    for(const w of W){ const k=w.key, g=out[k];
+      if(g<=0.0004){ if(engine.water.has(k)) engine.stopWater(k,Math.max(sec,1)); continue; }
+      if(engine.water.has(k)){ engine.setWater(k,g,sec); continue; }
+      const b=await getBuffer(k); if(!playing) break; if(!b) continue;
+      const now=waterTargets().out[k]; if(now>0.0004&&!engine.water.has(k)){ engine.startWater(k,b,META[k],now,Math.max(sec,2)); if(k==='ocean') applySwell(); } }
+    for(const k of keep) if(!BUF[k]&&RAW[k]) getBuffer(k); // decode ahead for the next journey stage
+    evict(keep);
+  } finally { syncing=false; if(resync){ resync=false; setTimeout(()=>syncWater(sec),0); } } }
+function applySwell(){ if(engine) engine.setSwell('ocean',S.swell.on?S.swell.depth/100:0,+S.swell.period); }
+
+/* ---------- session ---------- */
+let sessionStart=0, beatStart=0, beatLastT=0, beatEndNote=false;
+async function start(){
+  ensureCtx(); engine.begin(); await routeOutput();
+  playing=true; sessionStart=ctx.currentTime; engine.timerFactor=1; glideT0={};
+  if(wakeRunning){ wakeStart=ctx.currentTime; wakeLast=0; wakeEndNote=false; }
+  if(S.journey.on){ startJourneyClock(0); }
+  if(S.beat.on) restartBeat(true);
+  engine.setMaster(S.master,3); engine.setToneMaster(S.toneVol,0.05); engine.setSolfMaster(S.solfVol,0.05);
+  syncTones(0.05); syncSolfNow(0.05); await syncWater(3);
+  clearInterval(loopT); loopT=setInterval(loop,500);
+  $('startBtn').textContent='Stop'; $('startBtn').classList.remove('primary'); mediaSession(true); renderJourneyControls(); renderWake();
+  if(wakeRunning){ const m='Wake-up session started, '+L.minutesWords(S.wake.len)+'. '+L.wakeAt(0,S.wake.len).phaseName+'.'+(S.pulse.on?' Isochronic pulse on.':'')+(!packsSettled()?' Some recordings are still downloading and will fade in when ready.':''); $('wakeOut').textContent=m; say(m); return; }
+  const wn=W.filter(w=>S.water[w.key].on).length, tn=activeTones().length, sn=S.solf.filter(s=>s.on).length;
+  let msg='Playing. ';
+  if(journeyRunning) msg+='Water journey: stage 1, mountain stream. '+L.STAGES[0].words+(S.journey.repeat?' Looping is on.':'')+' ';
+  else msg+=(wn?wn+(wn===1?' water sound':' water sounds'):'No water sounds on')+'. ';
+  msg+=tn+(tn===1?' brainwave tone':' brainwave tones')+(sn?', '+sn+' solfeggio':'')+'.'+(timerTotalMin()?' Timer '+L.minutesWords(timerTotalMin())+'.':'');
+  if(!packsSettled()) msg+=' Some water recordings are still downloading and will fade in when ready.';
+  say(msg); }
+function stop(msg){ if(!playing) return; playing=false; clearInterval(loopT); loopT=null; if(journeyRunning){ jFrozen=jt(); lingering=true; } engine.stopAll(2); const wasWake=wakeRunning; wakeRunning=false; renderWake(); if(wasWake&&!msg) msg='Wake-up session stopped.';
+  setTimeout(()=>{ if(!playing){ try{$('liveOut').pause();}catch(e){} if(unlockEl) unlockEl.pause(); } },2500);
+  $('startBtn').textContent='Start'; $('startBtn').classList.add('primary'); mediaSession(false); renderJourneyControls(); say(msg||'Stopped.'); }
+function mediaSession(on){ if(!('mediaSession' in navigator)) return; try{ const j=journeyState();
+  navigator.mediaSession.metadata=new MediaMetadata({title:'Water Cycle Sanctuary',artist:wakeRunning?'Wake-up session':j?L.STAGES[j.stage].name:(S.wpreset&&L.WATER_PRESETS[S.wpreset]?L.WATER_PRESETS[S.wpreset].name:'Your water mix')});
+  navigator.mediaSession.playbackState=on?'playing':'paused'; navigator.mediaSession.setActionHandler('pause',()=>stop()); navigator.mediaSession.setActionHandler('play',()=>{ if(!playing) start(); }); }catch(e){} }
+
+/* ---------- water journey control ---------- */
+/* change the water journey length, keeping the same relative place in the current stage (and lingering, if lingering) */
+function changeLength(apply){ const old=JL(); const t0=jt(); apply(); save(); const nw=JL(); setTimeout(refreshGlideWords,0);
+  if(journeyRunning&&old!==nw){ const j=L.journeyAt(t0,old,S.journey.repeat); const C0=L.cycleSeconds(old); const into=t0-Math.floor(t0/C0)*C0; const P0=L.journeyPlan(old)[j.stage], P1=L.journeyPlan(nw)[j.stage];
+    const f=L.clamp((into-L.stageStart(j.stage,old))/(P0.hold+P0.fade),0,1); jFrozen=L.stageStart(j.stage,nw)+f*(P1.hold+P1.fade); jLast=jFrozen; jRef=ctx?ctx.currentTime:0; if(playing) syncWater(4); }
+  renderJourneyControls();
+  const msg='Water journey length: '+L.lengthLabel(nw)+'.'+(S.journey.repeat?' Looping is on, so after the rain it goes round again.':' Looping is off, so after the rain it stays with the rain.');
+  $('journeyOut').textContent=msg; say(msg); }
+function startJourneyClock(t){ journeyRunning=true; jFrozen=t; jLast=t; lingering=false; jEndNote=false; jRef=ctx?ctx.currentTime:0; }
+function setJourneyTime(t,sec,msg){ jFrozen=Math.max(0,t); jLast=jFrozen; jRef=ctx.currentTime; jEndNote=false; syncWater(sec==null?8:sec); renderJourneyControls(); mediaSession(true); if(msg) announceJ(msg,true); }
+function toggleJourney(){
+  S.journey.on=!S.journey.on; save(); setTimeout(refreshGlideWords,0);
+  if(S.journey.on){ S.wpreset=null;
+    if(playing){ startJourneyClock(0); syncWater(8); mediaSession(true); announceJ('Water journey started. Stage 1 of '+L.STAGES.length+': mountain stream. '+L.STAGES[0].words+(S.journey.repeat?' Looping is on.':' Looping is off; it will stay with the rain at the end.'),true); }
+    else { jFrozen=0; say('Water journey on. It begins at the mountain stream when you tap Start. '+L.journeyOverview(JL(),S.journey.repeat)); } }
+  else { journeyRunning=false; lingering=false; if(playing){ syncWater(8); mediaSession(true); } say('Water journey stopped. Your own water mix fades back in.'); }
+  renderJourneyControls(); }
+function announceJ(msg,force){ $('journeyOut').textContent=msg; if(force||S.journey.signal!=='off') say(msg); }
+function stageWordsFull(i){ return 'Stage '+(i+1)+' of '+L.STAGES.length+': '+L.STAGES[i].name+'. '+L.STAGES[i].words; }
+function linger(){ if(!journeyRunning||!playing){ say(S.journey.on?'The journey is not playing yet. Tap Start first.':'Start the water journey first.'); return; }
+  if(wakeRunning){ say('The wake-up session is playing, so the water journey waits.'); return; }
+  if(!lingering){ jFrozen=jt(); lingering=true; const j=L.journeyAt(jFrozen,JL(),S.journey.repeat); announceJ('Lingering '+(j.phase==='fade'?'between '+L.STAGES[j.stage].ph+' and '+L.STAGES[j.next].ph:'with '+L.STAGES[j.stage].ph)+'. The journey waits here until you tap Carry on.',true); }
+  else { lingering=false; jRef=ctx.currentTime; announceJ('Carrying on. '+L.journeyWhere(L.journeyAt(jFrozen,JL(),S.journey.repeat),JL(),S.journey.repeat),true); }
+  renderJourneyControls(); }
+function cycleBase(){ const C=L.cycleSeconds(JL()); return Math.floor(jt()/C)*C; }
+function gotoStage(i){ if(!journeyRunning||!playing){ say('Start the water journey and tap Start first.'); return; }
+  const wasL=lingering; lingering=false; setJourneyTime(cycleBase()+L.stageStart(i,JL()),8,'Going to '+stageWordsFull(i)+(wasL?' Lingering is off.':'')); }
+function stepStage(d){ if(!journeyRunning||!playing){ say('Start the water journey and tap Start first.'); return; }
+  const j=journeyState(); let i=j.stage; const into=jt()-cycleBase()-L.stageStart(i,JL());
+  if(d>0) i=j.done?0:(i+1)%L.STAGES.length; else if(into<20||j.phase==='fade') i=(i-1+L.STAGES.length)%L.STAGES.length;
+  if(d<0&&j.phase==='fade') i=j.stage;
+  gotoStage(i); }
+function whereText(){ if(!S.journey.on) return 'The water journey is off. '+describeWater();
+  if(!playing) return 'The water journey is on and will begin at the mountain stream when you tap Start.';
+  const j=journeyState(); return (lingering?'Lingering. ':'')+L.journeyWhere(j,JL(),S.journey.repeat); }
+
+/* ---------- tones ---------- */
+function activeTones(){ return S.bin.concat(S.iso).filter(l=>l.on&&l.vol>0); }
+function allLayers(){ return S.bin.concat(S.iso); }
+function beatRef(){ const st=L.cleanStages(S.beat.stages); return st.length?st[0].hz:10; }
+/* the undrifted beat of a tone at context time t; while a beat journey runs it owns the beat, and beat drift pauses */
+function baseBeat(p,t){
+  if(wakeRunning){ const w=L.wakeAt(t-wakeStart,S.wake.len); return {hz:w.beat,journey:true,carrier:p.id==='wake2'?w.carrier*L.WAKE.harmony:w.carrier}; }
+  let r={hz:p.beat,journey:false};
+  if(S.beat.on&&playing){ const j=L.beatAt(S.beat.stages,t-beatStart); if(j) r={hz:L.layerBeatUnderJourney(p,j.hz,beatRef(),S.beat.follow),journey:true}; }
+  if(p.cmode==='glide'){ if(glideT0[p.id]==null) glideT0[p.id]=playing?sessionStart:t; r.carrier=L.glideCarrier(p.carrier,p.glideHz,p.glideDir,t-glideT0[p.id],glideTotalSec(p.glideLen)); }
+  return r; }
+/* ---------- carrier glide (v4) ---------- */
+let glideT0={}; // context time each tone's glide began: the session start, or when Glide was chosen
+function sessionLenMin(){ const tm=timerTotalMin(); if(tm) return {mins:tm,why:'the sleep timer'}; if(S.journey.on) return {mins:L.cycleSeconds(JL())/60,why:'one water journey cycle'};
+  if(S.beat.on) return {mins:L.beatTotalMin(S.beat.stages),why:'the beat journey'}; return {mins:60,why:'one hour, as there is no timer or journey to follow'}; }
+function glideTotalSec(len){ return (len==='session'?Math.max(1,sessionLenMin().mins):+len)*60; }
+function glideWords(l){ const tgt=L.glideTarget(l.carrier,l.glideHz,l.glideDir), sl=sessionLenMin();
+  return 'Glides '+(l.glideDir==='up'?'up':'down')+' from '+L.hz(l.carrier)+' to '+L.hz(Math.round(tgt*100)/100)+' over '+(l.glideLen==='session'?'the whole session, now '+L.minutesWords(Math.round(sl.mins))+' ('+sl.why+')':L.minutesWords(+l.glideLen))+', then stays there. The beat stays exact.'; }
+/* ---------- wake-up session (v4) ---------- */
+let wakeRunning=false, wakeStart=0, wakeLast=0, wakeEndNote=false;
+function wt(){ return ctx&&wakeRunning?ctx.currentTime-wakeStart:0; }
+function wakeState(){ return wakeRunning&&playing?L.wakeAt(wt(),S.wake.len):null; }
+function wakeLayers(){ const v=L.WAKE.mainVol; return [{id:'wake1',kind:'binaural',beat:1.5,carrier:110,vol:v,on:true,drift:0,cmode:'steady'},{id:'wake2',kind:'binaural',beat:1.5,carrier:165,vol:Math.round(v*L.WAKE.harmonyVol),on:true,drift:0,cmode:'steady'}]; }
+function wakeSolf(w){ return w.solf.map(s=>({id:'wake-s'+s.freq,freq:s.freq,pan:s.pan,swell:s.swell,on:true,vol:Math.max(0.5,s.vol*s.level)})); }
+function syncSolfNow(sec){ if(!engine) return; if(wakeRunning) engine.syncSolf(wakeSolf(L.wakeAt(wt(),S.wake.len)),sec); else engine.syncSolf(S.solf,sec); }
+function startWake(){ S.wake.len=+$('wakeLen').value||20; save();
+  if(playing&&wakeRunning){ stop('Wake-up session stopped.'); return; }
+  wakeRunning=true; wakeLast=0; wakeEndNote=false;
+  if(!playing){ start().catch(e=>{ console.error(e); wakeRunning=false; renderWake(); say('Sorry, sound could not start: '+e.message); }); return; }
+  wakeStart=ctx.currentTime; engine.setTimerFactor(1); syncTones(1.5,true); syncSolfNow(2); syncWater(4); mediaSession(true); renderWake();
+  const m='Wake-up session started, '+L.minutesWords(S.wake.len)+'. '+L.wakeAt(0,S.wake.len).phaseName+'.'; $('wakeOut').textContent=m; say(m); }
+function wakeWhere(){ if(!wakeRunning||!playing) return 'The wake-up session is not running. '+L.wakeOverview(S.wake.len);
+  const w=wakeState(), lt=engine&&engine.tones.get('wake1'), now=lt?engine.toneNow('wake1'):null;
+  if(w.done) return 'The wake-up session is complete. The beat is holding at calm beta, '+L.hz(15)+'.';
+  return w.phaseName+'. Beat about '+L.hz(Math.round((now?now.beat:w.beat)*10)/10)+', '+L.bandName(w.beat)+', on a carrier of about '+L.hz(Math.round(w.carrier))+'. '+L.minutesWords(w.left/60)+' left.'; }
+function renderWake(){ const b=$('wakeBtn'); if(!b) return; const on=wakeRunning&&playing; b.textContent=on?'Stop the wake-up session':'Start the wake-up session'; b.classList.toggle('primary',!on);
+  $('wakeLen').value=String(S.wake.len); $('wakeEnd').value=S.wake.end; $('wakePulseOn').checked=!!S.pulse.on; $('pulseOn').checked=!!S.pulse.on; }
+function setPulse(on){ S.pulse.on=on; save(); renderWake(); if(engine&&playing) engine.syncPulse(S.pulse,0.8);
+  say(on?'Isochronic pulse on. It pulses gently in time with the first binaural tone'+(wakeRunning?', the wake-up tone':'')+'.':'Isochronic pulse off.'); }
+function beatBeats(){ if(!engine||!playing) return null; const out={}; allLayers().forEach(l=>{ const x=engine.toneNow(l.id); if(x) out[l.id]=x.beat; }); return out; }
+let beatSig='';
+function syncTones(sec,retune){ if(!engine||!playing) return; beatSig=beatSignature(); engine.pulseCfg=S.pulse; engine.syncTones(wakeRunning?wakeLayers():allLayers(),baseBeat,sec,!!retune); }
+function beatSignature(){ return JSON.stringify([S.beat.on,S.beat.follow,S.beat.stages,beatStart,wakeRunning,wakeStart,S.wake.len,S.timer.mins,S.journey.on,JL()]); } // also the things a session-length glide follows
+function restartBeat(quiet){ if(!ctx) return; beatStart=ctx.currentTime; beatLastT=0; beatEndNote=false; if(!quiet){ syncTones(1,true); say('Beat journey restarted at stage 1, '+L.hz(beatRef())+'.'); } }
+function timerTotalMin(){ const m=S.timer.mins; if(wakeRunning) return 0; if(m==='cycle') return S.journey.on?L.cycleSeconds(JL())/60:0; if(m==='beat') return S.beat.on?L.beatTotalMin(S.beat.stages):0; return +m||0; }
+
+/* ---------- the half-second loop ---------- */
+function loop(){
+  if(!playing) return;
+  if(ctx.state==='suspended'||ctx.state==='interrupted') ctx.resume().catch(()=>{});
+  const t=ctx.currentTime;
+  if(wakeRunning){ wakeLoop(t); return; }
+  if(journeyRunning&&!lingering){ const now=jt(); const ev=L.stageEvents(jLast,now,JL(),S.journey.repeat); jLast=now;
+    for(const e of ev){ if(e.type==='flow'){ announceJ('Crossfading from '+L.STAGES[e.stage].ph+' to '+L.STAGES[e.to].ph+(e.to===0?', as the cycle begins again':'')+'.'); }
+      else { announceJ(stageWordsFull(e.stage)+(e.stage===0&&e.cycle>0?' Cycle '+(e.cycle+1)+'.':'')); if(S.journey.signal==='chime') engine.chime(); mediaSession(true); } }
+    const j=journeyState(); if(j&&j.done&&!jEndNote){ jEndNote=true; announceJ('The water cycle is complete. The rain carries on until you stop.'); }
+    syncWater(0.6); }
+  if(beatSignature()!==beatSig) syncTones(1,true); engine.schedTones(t+3); // keeps drift and beat journey glides scheduled ahead
+  if(S.beat.on){ const bt=t-beatStart; const ev=L.beatEvents(S.beat.stages,beatLastT,bt); beatLastT=bt;
+    for(const e of ev){ let msg=null; if(e.type==='hold') msg='Beat journey stage '+(e.stage+1)+': holding at '+L.hz(e.hz)+(e.hold?' for '+L.minutesWords(e.hold):'')+'.'; else if(e.type==='glide') msg='Beat journey stage '+(e.stage+1)+': moving to '+L.hz(e.to)+'.'; else if(e.type==='end'&&!beatEndNote){ msg='Beat journey complete. The beat stays at '+L.hz(L.beatAt(S.beat.stages,bt).hz)+'.'; beatEndNote=true; }
+      if(!msg) continue; $('beatOut').textContent=msg; if(S.beat.signal!=='off') say(msg); if(S.beat.signal==='chime') engine.chime(0.07); } }
+  const tm=timerTotalMin(); if(tm){ const e=t-sessionStart; engine.setTimerFactor(L.timerGain(e,tm,+S.timer.fade)); if(e>=tm*60){ stop('Sleep timer finished. Sound stopped.'); return; } }
+}
+function wakeLoop(t){ const T=S.wake.len*60, e=t-wakeStart, ev=L.wakeEvents(wakeLast,e,S.wake.len); wakeLast=e;
+  for(const x of ev){ if(x.type==='phase') $('wakeOut').textContent=x.name+'.'; } // on screen only, for VoiceOver to read when wanted: no spoken interruptions
+  syncWater(0.6); syncSolfNow(0.6); if(beatSignature()!==beatSig) syncTones(1,true); engine.schedTones(t+3);
+  if(S.wake.end==='stop'){ const left=T-e; engine.setTimerFactor(left<20?Math.max(0,left/20):1); if(left<=0){ stop('Wake-up session complete. Good morning.'); $('wakeOut').textContent='Wake-up session complete.'; return; } }
+  else if(e>=T&&!wakeEndNote){ wakeEndNote=true; const m='Wake-up session complete. Calm beta carries on until you stop.'; $('wakeOut').textContent=m; say(m); } }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&ctx&&playing){ ctx.resume().catch(()=>{}); if(S.audioMode==='playback'&&unlockEl) unlockEl.play().catch(()=>{}); if(S.audioMode==='background') $('liveOut').play().catch(()=>{}); } });
+
+/* ---------- descriptions ---------- */
+function describeWater(){ const on=W.filter(w=>S.water[w.key].on).map(w=>w.name.toLowerCase()+' at '+pct(S.water[w.key].vol)); return on.length?'Your sound mix: '+on.join('; ')+'.':'No water or weather sounds switched on in your own mix.'; }
+function layerTitle(l,i){ const k=l.kind==='binaural'?'Binaural':'Isochronic'; return k+' tone '+(i+1)+': '+L.hz(l.beat)+' beat, '+L.bandName(l.beat)+', on '+L.hz(l.carrier)+(l.drift>0?', '+L.driftWords(l.drift):'')+(l.cmode==='glide'?', carrier glides '+l.glideDir+' '+L.hz(l.glideHz):'')+(l.on?'':', off'); }
+function solfTitle(s,i){ return 'Solfeggio tone '+(i+1)+': '+L.hz(s.freq)+', '+(s.pan<-15?'left':s.pan>15?'right':'centre')+(s.on?'':', off'); }
+function describe(){ const p=[]; p.push(playing?'Playing.':'Stopped.'); p.push('Master volume '+pct(S.master)+'.');
+  if(wakeRunning&&playing){ p.push('Wake-up session. '+wakeWhere()); p.push(S.pulse.on?'Isochronic pulse on at '+pct(S.pulse.vol)+'.':'No isochronic pulse.'); return p.join(' '); }
+  if(S.journey.on){ p.push('Water journey on. '+whereText()); } else p.push(describeWater());
+  if(W.some(w=>S.water.ocean.on||S.journey.on)&&S.swell.on) p.push('Tidal swell on the ocean.');
+  const b=S.bin.filter(l=>l.on), is=S.iso.filter(l=>l.on); const jb=beatBeats();
+  const tl=(arr,name)=>arr.length?arr.length+' '+name+(arr.length===1?' tone':' tones')+': '+arr.map(l=>L.hz(jb&&jb[l.id]!=null?Math.round(jb[l.id]*10)/10:l.beat)+' on '+L.hz(l.carrier)+' at '+pct(l.vol)+(l.drift>0?', '+L.driftWords(l.drift)+(S.beat.on?' (beat drift paused by the beat journey)':''):', steady')).join('; ')+'.':'No '+name+' tones on.';
+  p.push(tl(b,'binaural')); p.push(tl(is,'isochronic')); const gl=allLayers().filter(l=>l.on&&l.cmode==='glide'); if(gl.length) p.push(gl.length+(gl.length===1?' tone has':' tones have')+' a carrier glide.');
+  p.push(S.pulse.on?'Isochronic pulse with the beat on, at '+pct(S.pulse.vol)+'.':''); if(b.length+is.length) p.push('All brainwave tones volume '+pct(S.toneVol)+'.');
+  p.push(S.beat.on?'Beat journey on, '+L.minutesWords(L.beatTotalMin(S.beat.stages))+'.':'Beat journey off.');
+  const so=S.solf.filter(s=>s.on); p.push(so.length?so.length+' solfeggio '+(so.length===1?'tone':'tones')+': '+so.map(s=>L.hz(s.freq)+' at '+pct(s.vol)).join('; ')+'.':'No solfeggio tones on.');
+  const tm=timerTotalMin(); p.push(tm?'Sleep timer '+L.minutesWords(tm)+'.':'No sleep timer.');
+  if(S.mood&&L.MOODS[S.mood]) p.push('Last mood preset: '+L.MOODS[S.mood].name+'.'); return p.filter(Boolean).join(' '); }
+function timeInfo(){ if(!playing) return 'Not playing.'; const e=ctx.currentTime-sessionStart; const p=['Playing for '+L.minutesWords(e/60)+'.'];
+  const tm=timerTotalMin(); if(tm) p.push(L.minutesWords(Math.max(0,tm-e/60))+' left on the sleep timer.'); else p.push('No sleep timer.');
+  if(S.beat.on){ const bt=ctx.currentTime-beatStart, j=L.beatAt(S.beat.stages,bt), tot=L.beatTotalMin(S.beat.stages);
+    p.push(j.done?'Beat journey complete; the beat stays at '+L.hz(j.hz)+'.':'Beat journey stage '+(j.stage+1)+' of '+S.beat.stages.length+', '+(j.phase==='glide'?'moving towards '+L.hz(j.to):'holding at '+L.hz(j.hz))+', '+L.minutesWords(Math.max(0,tot-bt/60))+' left in the beat journey.'); }
+  return p.join(' '); }
+
+/* ---------- rendering ---------- */
+function renderWater(){ $('waterList').innerHTML=''; $('weatherList').innerHTML='';
+  W.forEach(w=>{ const c=S.water[w.key], m=META[w.key]||{}; const box=$(w.group==='weather'?'weatherList':'waterList');
+    const sw=el('input',{type:'checkbox',role:'switch',id:'won-'+w.key}); sw.checked=c.on;
+    sw.addEventListener('change',()=>{ c.on=sw.checked; S.wpreset=null; save(); if(playing&&!journeyRunning) syncWater(2); say(w.name+(c.on?' on.':' off.')+(journeyRunning?' This takes effect when the water journey stops.':'')); });
+    const kids=[el('h3',{id:'h-w-'+w.key,text:w.name}),el('p',{class:'note',text:m.about||''}),el('label',{class:'switch'},[sw,w.name+' on']),
+      rangeField('wvol-'+w.key,w.name+' volume',c.vol,v=>{ c.vol=v; S.wpreset=null; save(); if(playing) syncWater(0.3); }),
+      el('p',{class:'note',id:'wstate-'+w.key,'aria-live':'off'})];
+    if(w.key==='ocean'){ const ss=el('input',{type:'checkbox',role:'switch',id:'swellOn'}); ss.checked=S.swell.on; ss.addEventListener('change',()=>{ S.swell.on=ss.checked; save(); applySwell(); say(S.swell.on?'Tidal swell on.':'Tidal swell off.'); });
+      const per=el('select',{id:'swellPeriod'},[['60','About 1 minute'],['120','About 2 minutes (default)'],['240','About 4 minutes'],['480','About 8 minutes']].map(([v,t])=>el('option',{value:v,text:t}))); per.value=S.swell.period;
+      per.addEventListener('change',()=>{ S.swell.period=per.value; save(); applySwell(); });
+      kids.push(el('h3',{id:'h-swell',text:'Tidal swell for the ocean'}),el('p',{class:'note',text:'The ocean slowly grows and ebbs, like a tide surging in and drawing back. It never gets louder than the ocean volume.'}),
+        el('label',{class:'switch'},[ss,'Tidal swell on']),rangeField('swellDepth','Tidal swell depth',S.swell.depth,v=>{ S.swell.depth=v; save(); applySwell(); }),
+        el('div',{class:'field'},[el('label',{for:'swellPeriod',text:'One rise and fall takes'}),per])); }
+    box.appendChild(el('li',{class:'card'},kids)); });
+  loadInfo(); }
+function renderWaterPresets(){ const box=$('waterPresetButtons'); box.innerHTML='';
+  Object.keys(L.WATER_PRESETS).forEach(k=>box.appendChild(el('button',{type:'button',id:'wp-'+k,text:L.WATER_PRESETS[k].name,onclick:()=>applyWaterPreset(k)}))); }
+function applyWaterPreset(k){ const p=L.WATER_PRESETS[k]; W.forEach(w=>{ const v=p.mix[w.key]; S.water[w.key].on=v!=null; if(v!=null) S.water[w.key].vol=v; });
+  S.wpreset=k; const wasJ=S.journey.on; if(wasJ){ S.journey.on=false; journeyRunning=false; lingering=false; }
+  save(); renderWater(); renderJourneyControls(); if(playing){ syncWater(5); mediaSession(true); }
+  const msg=p.name+' set. '+p.about+(wasJ?' The water journey has stopped.':'')+(playing?'':' Tap Start to listen.'); $('waterPresetOut').textContent=msg; say(msg); }
+function renderJourneyControls(){ const b=$('journeyBtn'); b.textContent=S.journey.on?'Stop the water journey':'Start the water journey'; b.classList.toggle('primary',!S.journey.on);
+  const can=S.journey.on&&playing; ['lingerBtn','prevStage','nextStage','gotoBtn'].forEach(id=>{ $(id).disabled=!can; });
+  $('lingerBtn').textContent=lingering&&journeyRunning?'Carry on with the journey':'Linger here';
+  $('journeyLength').value=S.journey.length; $('journeyCustomMin').value=S.journey.customMin; $('journeyLenNow').textContent='Now: '+L.lengthLabel(JL())+'.'; $('journeyRepeat').checked=S.journey.repeat; $('journeySignal').value=S.journey.signal; $('journeyHail').checked=!!S.journey.hail; }
+function renderStageInfo(){ const box=$('stageInfo'); box.innerHTML='';
+  L.STAGES.forEach((s,i)=>box.appendChild(el('li',{},[el('strong',{text:s.name+'. '}),s.words+(s.len<1?' A shorter stage.':s.len>1?' A slightly longer stage.':'')]))); 
+  const g=$('gotoStage'); g.innerHTML=''; L.STAGES.forEach((s,i)=>g.appendChild(el('option',{value:String(i),text:(i+1)+'. '+s.name}))); }
+function renderLayers(kind,focusId){ const arr=kind==='binaural'?S.bin:S.iso, box=$(kind==='binaural'?'binList':'isoList'); box.innerHTML='';
+  arr.forEach((l,i)=>{ const h=el('h3',{id:'h-'+l.id,tabindex:'-1',text:layerTitle(l,i)}); const upd=()=>{ h.textContent=layerTitle(l,i); save(); syncTones(0.5); };
+    const sw=el('input',{type:'checkbox',role:'switch',id:'on-'+l.id}); sw.checked=l.on; sw.addEventListener('change',()=>{ l.on=sw.checked; upd(); say(layerTitle(l,i)+'.'); });
+    const word=kind==='binaural'?'Binaural':'Isochronic';
+    box.appendChild(el('li',{class:'card'},[h,el('label',{class:'switch'},[sw,word+' tone '+(i+1)+' on']),
+      numField('beat-'+l.id,'Beat, in hertz',l.beat,L.MIN_BEAT,L.MAX_BEAT,v=>{ l.beat=v; S.mood=null; upd(); }),
+      numField('car-'+l.id,'Carrier pitch, in hertz',l.carrier,L.MIN_CARRIER,L.MAX_CARRIER,v=>{ l.carrier=v; S.mood=null; upd(); }),
+      driftField(l,i,word,upd),
+      carrierFields(l,i,word,upd),
+      rangeField('vol-'+l.id,'Volume, '+word.toLowerCase()+' tone '+(i+1),l.vol,v=>{ l.vol=v; save(); syncTones(0.2); }),
+      el('button',{type:'button',text:'Remove '+word.toLowerCase()+' tone '+(i+1),onclick:()=>{ arr.splice(i,1); save(); syncTones(0.5); renderLayers(kind); updateAddButtons(); say(word+' tone '+(i+1)+' removed. '+arr.length+' left.'); const nx=arr[Math.min(i,arr.length-1)]; (nx?$('h-'+nx.id):$(kind==='binaural'?'addBin':'addIso')).focus(); }})])); });
+  if(!arr.length) box.appendChild(el('li',{class:'note',text:'No '+kind+' tones yet.'}));
+  if(focusId&&$('h-'+focusId)) $('h-'+focusId).focus(); }
+/* v4: carrier pitch mode: Steady, Drift (the old carrier drift switch) or Glide, with the glide's amount, direction and length */
+function carrierFields(l,i,word,upd){ const n=word.toLowerCase()+' tone '+(i+1), wrap=el('div',{class:'carrier'});
+  const sel=el('select',{id:'cm-'+l.id},[['steady','Steady'],['drift','Drift slightly, with the drift amount'],['glide','Glide slowly up or down']].map(([v,t])=>el('option',{value:v,text:t}))); sel.value=l.cmode;
+  const box=el('div',{id:'gl-'+l.id,class:'glide'}); box.hidden=l.cmode!=='glide'; const info=el('p',{class:'note',id:'gw-'+l.id,text:glideWords(l)});
+  const after=(msg)=>{ info.textContent=glideWords(l); upd(); if(msg) say(msg); };
+  sel.addEventListener('change',()=>{ const was=l.cmode; l.cmode=sel.value; l.carrierDrift=l.cmode==='drift'; box.hidden=l.cmode!=='glide';
+    if(l.cmode==='glide'&&was!=='glide'&&playing) glideT0[l.id]=ctx.currentTime; // a glide chosen mid-session starts now
+    after(l.cmode==='glide'?'Carrier glide. '+glideWords(l):l.cmode==='drift'?'The carrier drifts slightly, with the drift amount.':'The carrier stays steady.'); });
+  const amt=numField('ga-'+l.id,'Glide amount, in hertz, 2 to 50',l.glideHz,L.GLIDE_MIN,L.GLIDE_MAX,v=>{ l.glideHz=v; after(glideWords(l)); });
+  const dir=el('select',{id:'gd-'+l.id},[['down','Down (default)'],['up','Up']].map(([v,t])=>el('option',{value:v,text:t}))); dir.value=l.glideDir; dir.addEventListener('change',()=>{ l.glideDir=dir.value; after(glideWords(l)); });
+  const len=el('select',{id:'gt-'+l.id},L.GLIDE_LENGTHS.map(g=>el('option',{value:String(g),text:g==='session'?'The whole session (default)':L.minutesWords(g)}))); len.value=String(l.glideLen);
+  len.addEventListener('change',()=>{ l.glideLen=len.value==='session'?'session':+len.value; after(glideWords(l)); });
+  box.appendChild(amt); box.appendChild(el('div',{class:'field'},[el('label',{for:'gd-'+l.id,text:'Glide direction, '+n}),dir])); box.appendChild(el('div',{class:'field'},[el('label',{for:'gt-'+l.id,text:'Glide over, '+n}),len])); box.appendChild(info);
+  wrap.appendChild(el('div',{class:'field'},[el('label',{for:'cm-'+l.id,text:'Carrier pitch, '+n}),sel])); wrap.appendChild(box); return wrap; }
+function refreshGlideWords(){ allLayers().forEach(l=>{ const e=$('gw-'+l.id); if(e) e.textContent=glideWords(l); }); }
+function driftField(l,i,word,upd){ const id='drift-'+l.id, label=(l.kind==='binaural'?'Beat drift amount, binaural tone ':'Pulse drift amount, isochronic tone ')+(i+1);
+  const r=el('input',{type:'range',id,min:'0',max:'100',step:'5'}); const vt=v=>+v===0?'off, steady':pct(v); r.value=l.drift||0; r.setAttribute('aria-valuetext',vt(r.value));
+  r.addEventListener('input',()=>{ l.drift=+r.value; r.setAttribute('aria-valuetext',vt(r.value)); S.mood=null; upd(); });
+  return el('div',{class:'field'},[el('label',{for:id,text:label}),r]); }
+function updateAddButtons(){ [['addBin',S.bin,'binaural'],['addIso',S.iso,'isochronic']].forEach(([id,arr,k])=>{ const b=$(id); b.disabled=arr.length>=L.MAX_LAYERS; b.textContent=arr.length>=L.MAX_LAYERS?'Ten '+k+' tones, the maximum':'Add a '+k+' tone ('+arr.length+' of 10)'; });
+  const s=$('addSolf'); s.disabled=S.solf.length>=L.MAX_SOLF; s.textContent=S.solf.length>=L.MAX_SOLF?'Six solfeggio tones, the maximum':'Add a solfeggio tone ('+S.solf.length+' of 6)'; }
+function addLayer(kind){ const arr=kind==='binaural'?S.bin:S.iso; if(arr.length>=L.MAX_LAYERS) return; const used=allLayers().map(l=>l.carrier); const l=L.makeLayer(kind,arr.length?arr[arr.length-1].beat:8,L.nextCarrier(used),35); arr.push(l); save(); syncTones(0.5); renderLayers(kind,l.id); updateAddButtons(); say('Added '+layerTitle(l,arr.length-1)+'.'+(arr.length===5?' More than four tones can start to feel busy. The app lowers each one so the total stays the same; listen for comfort.':'')); }
+function renderSolf(focusId){ const box=$('solfList'); box.innerHTML='';
+  S.solf.forEach((s,i)=>{ const h=el('h3',{id:'h-'+s.id,tabindex:'-1',text:solfTitle(s,i)}); const upd=()=>{ h.textContent=solfTitle(s,i); save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,0.4); };
+    const sw=el('input',{type:'checkbox',role:'switch',id:'on-'+s.id}); sw.checked=s.on; sw.addEventListener('change',()=>{ s.on=sw.checked; upd(); say(solfTitle(s,i)+'.'); });
+    const sel=el('select',{id:'sf-'+s.id},L.SOLFEGGIO.map(f=>el('option',{value:String(f),text:f+' hertz'}))); if(!L.SOLFEGGIO.includes(s.freq)) sel.appendChild(el('option',{value:String(s.freq),text:s.freq+' hertz'})); sel.value=String(s.freq);
+    sel.addEventListener('change',()=>{ s.freq=+sel.value; upd(); });
+    const pos=el('select',{id:'sp-'+s.id},[['-60','Left'],['-30','A little left'],['0','Centre'],['30','A little right'],['60','Right']].map(([v,t])=>el('option',{value:v,text:t}))); pos.value=String([-60,-30,0,30,60].reduce((a,b)=>Math.abs(b-s.pan)<Math.abs(a-s.pan)?b:a));
+    pos.addEventListener('change',()=>{ s.pan=+pos.value; upd(); });
+    box.appendChild(el('li',{class:'card'},[h,el('label',{class:'switch'},[sw,'Solfeggio tone '+(i+1)+' on']),
+      el('div',{class:'field'},[el('label',{for:'sf-'+s.id,text:'Frequency'}),sel]),
+      rangeField('sv-'+s.id,'Volume, solfeggio tone '+(i+1),s.vol,v=>{ s.vol=v; save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,0.2); }),
+      rangeField('ss-'+s.id,'Swell, solfeggio tone '+(i+1),s.swell,v=>{ s.swell=v; save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,0.2); }),
+      el('div',{class:'field'},[el('label',{for:'sp-'+s.id,text:'Position'}),pos]),
+      el('button',{type:'button',text:'Remove solfeggio tone '+(i+1),onclick:()=>{ S.solf.splice(i,1); save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,0.5); renderSolf(); updateAddButtons(); say('Solfeggio tone '+(i+1)+' removed. '+S.solf.length+' left.'); const nx=S.solf[Math.min(i,S.solf.length-1)]; (nx?$('h-'+nx.id):$('addSolf')).focus(); }})])); });
+  if(!S.solf.length) box.appendChild(el('li',{class:'note',text:'No solfeggio tones yet.'}));
+  if(focusId&&$('h-'+focusId)) $('h-'+focusId).focus(); }
+function addSolf(){ if(S.solf.length>=L.MAX_SOLF) return; const used=S.solf.map(s=>s.freq); const f=[528,396,639,174,417,741,285,852,963,432].find(x=>!used.includes(x))||528;
+  const s=L.makeSolf(f,40,[0,-60,60,-30,30,0][S.solf.length],30); S.solf.push(s); save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,0.6); renderSolf(s.id); updateAddButtons(); say('Added '+solfTitle(s,S.solf.length-1)+'.'); }
+function renderSolfPresets(){ const box=$('solfPresetButtons'); box.innerHTML=''; Object.keys(L.SOLF_PRESETS).forEach(k=>box.appendChild(el('button',{type:'button',id:'sp-'+k,text:L.SOLF_PRESETS[k].name,onclick:()=>{
+  S.solf=L.SOLF_PRESETS[k].tones.map(t=>L.makeSolf(t[0],t[1],t[2],t[3])); save(); if(engine&&playing&&!wakeRunning) engine.syncSolf(S.solf,1.5); renderSolf(); updateAddButtons(); say(L.SOLF_PRESETS[k].name+' set.'+(playing?'':' Tap Start to listen.')); }}))); }
+function beatTitle(s,i){ return L.beatStageWords(L.cleanStages(S.beat.stages)[i]||s,i); }
+function renderBeat(focusIdx){ const box=$('beatList'); box.innerHTML=''; const st=S.beat.stages;
+  st.forEach((s,i)=>{ const h=el('h3',{id:'h-bst-'+i,tabindex:'-1',text:beatTitle(s,i)}); const upd=()=>{ h.textContent=beatTitle(s,i); save(); showBeatTotal(); };
+    const kids=[h,numField('bst-hz-'+i,i===0?'Start beat, in hertz':'Target beat, in hertz',s.hz,L.MIN_BEAT,L.MAX_BEAT,v=>{ s.hz=v; upd(); })];
+    if(i>0){ kids.push(numField('bst-tr-'+i,'Minutes to get there',s.trans,0,240,v=>{ s.trans=v; upd(); }));
+      const sel=el('select',{id:'bst-sh-'+i},[el('option',{value:'smooth',text:'Smooth glide'}),el('option',{value:'stepped',text:'One-minute steps'})]); sel.value=s.shape; sel.addEventListener('change',()=>{ s.shape=sel.value; upd(); });
+      kids.push(el('div',{class:'field'},[el('label',{for:'bst-sh-'+i,text:'How it moves'}),sel])); }
+    else kids.push(el('p',{class:'note',text:'The beat journey starts here straight away.'}));
+    kids.push(numField('bst-ho-'+i,'Hold, in minutes',s.hold,0,480,v=>{ s.hold=v; upd(); }));
+    const mv=d=>()=>{ const first=st[0]; if(L.moveItem(st,i,d)){ if(st[0]!==first&&!(first.trans>0)) first.trans=3; save(); renderBeat(i+d); showBeatTotal(); say('Moved to position '+(i+d+1)+'. '+beatTitle(st[i+d],i+d)); } };
+    if(i>0) kids.push(el('button',{type:'button',text:'Move beat stage '+(i+1)+' earlier',onclick:mv(-1)}));
+    if(i<st.length-1) kids.push(el('button',{type:'button',text:'Move beat stage '+(i+1)+' later',onclick:mv(1)}));
+    if(st.length>1) kids.push(el('button',{type:'button',text:'Remove beat stage '+(i+1),onclick:()=>{ st.splice(i,1); save(); renderBeat(Math.min(i,st.length-1)); showBeatTotal(); say('Beat stage removed. '+st.length+' stages, '+L.minutesWords(L.beatTotalMin(st))+'.'); }}));
+    box.appendChild(el('li',{class:'card'},kids)); });
+  if(focusIdx!=null&&$('h-bst-'+focusIdx)) $('h-bst-'+focusIdx).focus(); }
+function showBeatTotal(){ $('h-bstages').textContent='Beat journey stages: '+S.beat.stages.length+', total '+L.minutesWords(L.beatTotalMin(S.beat.stages)); }
+function renderCredits(){ const box=$('credits'); box.innerHTML='';
+  W.forEach(w=>{ const m=META[w.key]; if(!m) return; (m.sources||[]).forEach(src=>{
+    box.appendChild(el('li',{class:'card'},[el('h3',{text:w.name+': '+src.title}),
+      el('p',{},['By '+src.author+'. ',el('a',{href:src.url,text:'Freesound page for '+src.title}),'. Licence: ',el('a',{href:src.licenceUrl,text:src.licence}),'.']),
+      el('p',{class:'note',text:'What it is: '+src.what}),el('p',{class:'note',text:'Changes made: '+src.changes})])); }); }); }
+function renderMoods(){ const box=$('moodButtons'); box.innerHTML=''; Object.keys(L.MOODS).forEach(k=>box.appendChild(el('button',{type:'button',id:'mood-'+k,text:L.MOODS[k].name,onclick:()=>applyMood(k)}))); }
+function applyMood(k){ const m=L.MOODS[k]; S.bin=L.moodLayers(k,Math.round(m.master*0.8)); S.mood=k;
+  if(m.journey){ S.beat.on=true; S.beat.follow=m.journey.follow; S.beat.stages=L.cleanStages(m.journey.stages); } else S.beat.on=false;
+  save(); renderToneParts(); if(playing){ if(S.beat.on) restartBeat(true); syncTones(1.5); }
+  const msg=m.name+' set. '+L.moodSummary(k)+' '+m.about+(playing?'':' Tap Start to listen.'); $('moodOut').textContent=msg; say(msg); }
+function renderToneParts(){ renderLayers('binaural'); renderLayers('isochronic'); updateAddButtons(); renderBeat(); showBeatTotal(); $('beatOn').checked=S.beat.on; $('beatFollow').value=S.beat.follow; $('beatSignal').value=S.beat.signal; }
+function renderAll(){ setRange($('pulseVol'),S.pulse.vol); renderWake(); setRange($('masterVol'),S.master); setRange($('toneVol'),S.toneVol); setRange($('solfVol'),S.solfVol); renderWater(); renderJourneyControls(); renderToneParts(); renderSolf();
+  $('timerMins').value=S.timer.mins; $('timerFade').value=S.timer.fade; $('audioMode').value=S.audioMode; }
+
+/* ---------- wiring ---------- */
+function init(){
+  const jl=$('journeyLength'); Object.keys(L.JOURNEY_LENGTHS).forEach(k=>jl.appendChild(el('option',{value:k,text:L.lengthLabel(k)}))); jl.appendChild(el('option',{value:'custom',text:'Set my own length, in the minutes box below'}));
+  const bt=$('beatTemplate'); Object.keys(L.BEAT_TEMPLATES).forEach(k=>bt.appendChild(el('option',{value:k,text:L.BEAT_TEMPLATES[k].name})));
+  renderWaterPresets(); renderMoods(); renderSolfPresets(); renderStageInfo(); renderCredits(); renderAll();
+  $('startBtn').addEventListener('click',()=>{ if(playing) stop(); else start().catch(e=>{ console.error(e); say('Sorry, sound could not start: '+e.message); }); });
+  $('masterVol').addEventListener('input',e=>{ S.master=+e.target.value; setRange(e.target,S.master); save(); if(engine&&playing) engine.setMaster(S.master); });
+  $('toneVol').addEventListener('input',e=>{ S.toneVol=+e.target.value; setRange(e.target,S.toneVol); save(); if(engine&&playing) engine.setToneMaster(S.toneVol); });
+  $('solfVol').addEventListener('input',e=>{ S.solfVol=+e.target.value; setRange(e.target,S.solfVol); save(); if(engine&&playing) engine.setSolfMaster(S.solfVol); });
+  $('describeBtn').addEventListener('click',()=>{ const d=describe(); $('describeOut').textContent=d; say(d); });
+  $('whereBtn').addEventListener('click',()=>{ const d=whereText(); $('describeOut').textContent=d; say(d); });
+  $('timeBtn').addEventListener('click',()=>{ const d=timeInfo(); $('describeOut').textContent=d; say(d); });
+  $('journeyBtn').addEventListener('click',toggleJourney);
+  $('wakeBtn').addEventListener('click',startWake);
+  $('wakeLen').addEventListener('change',e=>{ const was=S.wake.len; S.wake.len=+e.target.value; save(); if(wakeRunning&&playing){ wakeStart=ctx.currentTime-(ctx.currentTime-wakeStart)*S.wake.len/was; wakeLast=wt(); syncTones(1,true); } say('Wake-up session length: '+L.minutesWords(S.wake.len)+'.'+(wakeRunning&&playing?' It keeps its place.':'')); });
+  $('wakeEnd').addEventListener('change',e=>{ S.wake.end=e.target.value; save(); if(engine) engine.setTimerFactor(1); });
+  $('wakeWhere').addEventListener('click',()=>{ const d=wakeWhere(); $('wakeOut').textContent=d; say(d); });
+  $('wakeAbout').addEventListener('click',()=>{ const d=L.wakeOverview(S.wake.len); $('wakeOut').textContent=d; say(d); });
+  $('wakePulseOn').addEventListener('change',e=>setPulse(e.target.checked)); $('pulseOn').addEventListener('change',e=>setPulse(e.target.checked));
+  $('pulseVol').addEventListener('input',e=>{ S.pulse.vol=+e.target.value; setRange(e.target,S.pulse.vol); save(); if(engine&&playing) engine.syncPulse(S.pulse,0.3); });
+  $('journeyLength').addEventListener('change',e=>changeLength(()=>{ S.journey.length=e.target.value; }));
+  $('journeyCustomMin').addEventListener('change',e=>{ const v=L.clamp(Math.round(L.num(e.target.value,S.journey.customMin)),L.CUSTOM_MIN,L.CUSTOM_MAX); e.target.value=v;
+    changeLength(()=>{ S.journey.customMin=v; S.journey.length='custom'; }); });
+  $('journeyRepeat').addEventListener('change',e=>{ S.journey.repeat=e.target.checked; save(); say(S.journey.repeat?'Looping on. After the rain, the water journey crossfades back to the mountain stream and goes round again.':'Looping off. After the rain, the journey stays with the rain until you stop.'); });
+  $('journeySignal').addEventListener('change',e=>{ S.journey.signal=e.target.value; save(); });
+  $('journeyHail').addEventListener('change',e=>{ S.journey.hail=e.target.checked; save(); if(journeyRunning) syncWater(4); say(S.journey.hail?'A brief hail shower will pass through once, part-way through each rain stage.':'No hail in the journey.'); });
+  $('journeyWhere').addEventListener('click',()=>{ const d=whereText(); $('journeyOut').textContent=d; say(d); });
+  $('lingerBtn').addEventListener('click',linger);
+  $('prevStage').addEventListener('click',()=>stepStage(-1)); $('nextStage').addEventListener('click',()=>stepStage(1));
+  $('gotoBtn').addEventListener('click',()=>gotoStage(+$('gotoStage').value));
+  $('journeyOverview').addEventListener('click',()=>{ const d=L.journeyOverview(JL(),S.journey.repeat); $('journeyOut').textContent=d; say(d); });
+  $('addBin').addEventListener('click',()=>addLayer('binaural')); $('addIso').addEventListener('click',()=>addLayer('isochronic')); $('addSolf').addEventListener('click',addSolf);
+  $('beatOn').addEventListener('change',e=>{ S.beat.on=e.target.checked; save(); if(playing){ if(S.beat.on) restartBeat(true); syncTones(1); } say(S.beat.on?'Beat journey on. '+(playing?'Starting at stage 1.':'It will start when you tap Start.'):'Beat journey off. Tones return to their own beats.'); });
+  $('beatFollow').addEventListener('change',e=>{ S.beat.follow=e.target.value; save(); syncTones(1); });
+  $('beatSignal').addEventListener('change',e=>{ S.beat.signal=e.target.value; save(); });
+  $('beatSpeak').addEventListener('click',()=>{ const d=L.beatSummary(S.beat.stages); $('beatOut').textContent=d; say(d); });
+  $('beatRestart').addEventListener('click',()=>{ if(!playing){ say('The beat journey starts from stage 1 when you tap Start.'); return; } restartBeat(false); });
+  $('addBeatStage').addEventListener('click',()=>{ const st=S.beat.stages, last=st[st.length-1]||{hz:10}; st.push({hz:last.hz,trans:3,shape:'smooth',hold:5}); save(); renderBeat(st.length-1); showBeatTotal(); say('Added beat stage '+st.length+'. Set its target beat.'); });
+  $('applyBeatTemplate').addEventListener('click',()=>{ const k=$('beatTemplate').value; S.beat.stages=L.templateStages(k); save(); renderBeat(); showBeatTotal(); if(playing&&S.beat.on) restartBeat(true); const d=L.beatSummary(S.beat.stages); $('beatOut').textContent=d; say('Template applied. '+d); });
+  $('timerMins').addEventListener('change',e=>{ S.timer.mins=e.target.value; save(); refreshGlideWords(); if(engine) engine.setTimerFactor(1); const tm=timerTotalMin(); say(tm?'Timer: '+L.minutesWords(tm)+' from when you tapped Start.':(S.timer.mins==='cycle'?'The water journey is off, so there is no timer.':S.timer.mins==='beat'?'The beat journey is off, so there is no timer.':'No timer.')); });
+  $('timerFade').addEventListener('change',e=>{ S.timer.fade=e.target.value; save(); });
+  $('audioMode').addEventListener('change',e=>{ S.audioMode=e.target.value; save(); if(playing) stop('Sound mode changed. Tap Start to play again.'); });
+  $('resetAll').addEventListener('click',()=>{ if(!confirm('Reset all Water Cycle Sanctuary settings to the defaults?')) return; if(playing) stop(); S=defaults(); journeyRunning=false; lingering=false; save(); renderAll(); renderSolf(); say('Everything reset to the defaults.'); });
+  loadPacks();
+  if(!PACKS.length){ packState.announced=true; say('Ready. Tap Start.'); }
+}
+init();
+window.__wc={get wakeRunning(){return wakeRunning;},wakeStart:()=>wakeStart,setWakeClock:t=>{ wakeStart=ctx.currentTime-t; wakeLast=t; },startWake,wakeWhere,glideT0:()=>glideT0,glideTotalSec,sessionLenMin,get S(){return S;},JL,changeLength,beatStart:()=>beatStart,get engine(){return engine;},get ctx(){return ctx;},get playing(){return playing;},RAW,BUF,getBuffer,describe,whereText,timeInfo,applyMood,applyWaterPreset,addLayer,addSolf,start,stop,toggleJourney,gotoStage,linger,
+  jt,journeyState,setJourneyClock:t=>{ jFrozen=t; jLast=t; jRef=ctx.currentTime; },packState,waterTargets};
+})();
+</script>
+</body>
+</html>
